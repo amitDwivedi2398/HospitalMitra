@@ -12,6 +12,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import TopSheme from '../screens/TopSheme';
+import BranchesViewAll from '../screens/HomePage/BranchesViewAll';
+import CenterNameScreen from '../screens/HomePage/CenterNameScreen';
+import DoctorDetails from '../screens/HomePage/DoctorDetails';
+import FacilityScreen from '../screens/HomePage/FacilityScreen';
+import OtpSchame from '../screens/HomePage/OtpSchame';
+import ToDoOpd from '../screens/HomePage/ToDoOpd';
+import InvestigationScreen from '../screens/HomePage/InvestigationScreen';
+import OptSchameCatagiry from '../screens/HomePage/OptSchameCatagiry';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -22,6 +30,46 @@ const HomeStack = () => {
       <Stack.Screen
         name="Home"
         component={HomeScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="BranchesViewAll"
+        component={BranchesViewAll}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="CenterNameScreen"
+        component={CenterNameScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="DoctorDetails"
+        component={DoctorDetails}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="FacilityScreen"
+        component={FacilityScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="OtpSchame"
+        component={OtpSchame}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ToDoOpd"
+        component={ToDoOpd}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="InvestigationScreen"
+        component={InvestigationScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="OptSchameCatagiry"
+        component={OptSchameCatagiry}
         options={{headerShown: false}}
       />
       <Stack.Screen
@@ -40,13 +88,13 @@ const TabNavigator = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
         tabBarStyle: {backgroundColor: '#4584FF'},
         tabBarInactiveTintColor: '#fff',
         tabBarActiveTintColor: 'yellow',
       }}>
       <Tab.Screen
-        name="Home2"
+        name="Home"
         component={HomeStack}
         options={({route}) => ({
           tabBarStyle: {
@@ -56,10 +104,11 @@ const TabNavigator = () => {
           tabBarIcon: ({color, size}) => (
             <Ionicons name="home-outline" color={color} size={size} />
           ),
+        
         })}
       />
       <Tab.Screen
-        name="Cart"
+        name="Notice"
         component={CartScreen}
         options={{
           // tabBarBadge: 3,
@@ -70,7 +119,7 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="TopSheme"
+        name="Scheme"
         component={TopSheme}
         options={{
           // tabBarBadge: 3,
@@ -81,7 +130,7 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Favorite"
+        name="Chat"
         component={FavoriteScreen}
         options={{
           tabBarIcon: ({color, size}) => (

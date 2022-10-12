@@ -21,7 +21,6 @@ import CustomSwitch from '../components/CustomSwitch';
 import ListItem from '../components/ListItem';
 import CustomHeader from '../components/CustomHeader';
 import MarqueeView from 'react-native-marquee-view';
-
 export default function HomeScreen({ navigation }) {
   const [gamesTab, setGamesTab] = useState(1);
 
@@ -44,6 +43,7 @@ export default function HomeScreen({ navigation }) {
           sliderWidth={windowWidth - 20}
           itemWidth={300}
           loop={true}
+          autoplay={true}
         />
         <MarqueeView
           style={{ backgroundColor: '#fff', width: '100%', padding: 10 }}>
@@ -51,51 +51,84 @@ export default function HomeScreen({ navigation }) {
             <Text style={{ color: '#333', fontSize: 16, fontWeight: '600' }} >This is demo content</Text>
           </View>
         </MarqueeView>
-        <View style={{ padding: 5 }} >
-          <Text style={styles.title} >Top Branches</Text>
+        <View style={{ padding: 5 }}>
+          <View style={styles.topHeding} >
+            <Text style={styles.title} >Top Branches</Text>
+            <TouchableOpacity onPress={()=> navigation.navigate('BranchesViewAll')} >
+              <Text style={styles.viewAll} >View All</Text>
+            </TouchableOpacity>
+          </View>
           <ScrollView horizontal={true} style={{ flexDirection: 'row' }} >
             <View style={styles.sliderImg} >
-              <Image style={styles.slider} source={require('../assets/WalkThrough/img1.png')} />
+              <TouchableOpacity>
+                <Image style={styles.slider} source={require('../assets/WalkThrough/img1.png')} />
+              </TouchableOpacity>
             </View>
             <View style={styles.sliderImg} >
-              <Image style={styles.slider} source={require('../assets/WalkThrough/img2.png')} />
+              <TouchableOpacity>
+                <Image style={styles.slider} source={require('../assets/WalkThrough/img2.png')} />
+              </TouchableOpacity>
             </View>
             <View style={styles.sliderImg} >
-              <Image style={styles.slider} source={require('../assets/WalkThrough/img3.png')} />
+              <TouchableOpacity>
+                <Image style={styles.slider} source={require('../assets/WalkThrough/img3.png')} />
+              </TouchableOpacity>
             </View>
           </ScrollView>
         </View>
         <View style={{ padding: 5 }} >
-          <Text style={styles.title} >Top Announcement</Text>
+        <View style={styles.topHeding} >
+            <Text style={styles.title} >Top Announcement</Text>
+            <TouchableOpacity>
+              <Text style={styles.viewAll} >View All</Text>
+            </TouchableOpacity>
+          </View>
           <ScrollView horizontal={true} style={{ flexDirection: 'row' }} >
             <View style={styles.sliderImg} >
-              <Image style={styles.slider} source={require('../assets/WalkThrough/img1.png')} />
+              <TouchableOpacity>
+                <Image style={styles.slider} source={require('../assets/WalkThrough/img1.png')} />
+              </TouchableOpacity>
             </View>
             <View style={styles.sliderImg} >
-              <Image style={styles.slider} source={require('../assets/WalkThrough/img2.png')} />
+              <TouchableOpacity>
+                <Image style={styles.slider} source={require('../assets/WalkThrough/img2.png')} />
+              </TouchableOpacity>
             </View>
             <View style={styles.sliderImg} >
-              <Image style={styles.slider} source={require('../assets/WalkThrough/img3.png')} />
+              <TouchableOpacity>
+                <Image style={styles.slider} source={require('../assets/WalkThrough/img3.png')} />
+              </TouchableOpacity>
             </View>
           </ScrollView>
         </View>
         <View style={{ padding: 5 }} >
-          <Text style={styles.title} >Top Schene</Text>
+        <View style={styles.topHeding} >
+            <Text style={styles.title} >Top Scheme</Text>
+            <TouchableOpacity>
+              <Text style={styles.viewAll} >View All</Text>
+            </TouchableOpacity>
+          </View>
           <ScrollView horizontal={true} style={{ flexDirection: 'row' }} >
             <View style={styles.sliderImg} >
-              <Image style={styles.slider} source={require('../assets/WalkThrough/img1.png')} />
+              <TouchableOpacity>
+                <Image style={styles.slider} source={require('../assets/WalkThrough/img1.png')} />
+              </TouchableOpacity>
             </View>
             <View style={styles.sliderImg} >
-              <Image style={styles.slider} source={require('../assets/WalkThrough/img2.png')} />
+              <TouchableOpacity>
+                <Image style={styles.slider} source={require('../assets/WalkThrough/img2.png')} />
+              </TouchableOpacity>
             </View>
             <View style={styles.sliderImg} >
-              <Image style={styles.slider} source={require('../assets/WalkThrough/img3.png')} />
+              <TouchableOpacity>
+                <Image style={styles.slider} source={require('../assets/WalkThrough/img3.png')} />
+              </TouchableOpacity>
             </View>
           </ScrollView>
         </View>
-        <View style={{ padding: 5,marginBottom:10 }} >
-          <ScrollView horizontal={true} style={{ flexDirection: 'row' }} >
-            <View style={styles.sliderImg} >
+        <View style={{ padding: 5, marginBottom: 10 }} >
+          <ScrollView horizontal={true}  style={{ flexDirection: 'row' }} >
+            <View style={styles.sliderImg}>
               <Image style={styles.baner} source={require('../assets/images/departmentHospital.png')} />
             </View>
             <View style={styles.sliderImg} >
@@ -106,14 +139,21 @@ export default function HomeScreen({ navigation }) {
             </View>
           </ScrollView>
         </View>
-        
       </ScrollView>
     </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
   title: {
-    color: '#4584FF', fontSize: 18, fontWeight: '700', padding: 10
+    color: '#4584FF', fontSize: 18, fontWeight: '700',
+  },
+  viewAll: {
+    color: '#6F6F6F', fontSize: 15, fontWeight: '500'
+  },
+  topHeding:{
+    flexDirection: 'row', 
+    justifyContent: 'space-between',
+     marginBottom: 10
   },
   slider: {
     width: 90,
@@ -133,7 +173,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     marginHorizontal: 5,
   },
-  baner:{
+  baner: {
     width: 300,
     height: 100,
     marginHorizontal: 5,
