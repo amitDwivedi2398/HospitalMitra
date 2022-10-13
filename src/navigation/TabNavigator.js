@@ -20,6 +20,7 @@ import OtpSchame from '../screens/HomePage/OtpSchame';
 import ToDoOpd from '../screens/HomePage/ToDoOpd';
 import InvestigationScreen from '../screens/HomePage/InvestigationScreen';
 import OptSchameCatagiry from '../screens/HomePage/OptSchameCatagiry';
+import DoctorAbout from '../screens/HomePage/DoctorAbout';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -70,6 +71,11 @@ const HomeStack = () => {
       <Stack.Screen
         name="OptSchameCatagiry"
         component={OptSchameCatagiry}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="DoctorAbout"
+        component={DoctorAbout}
         options={{headerShown: false}}
       />
       <Stack.Screen

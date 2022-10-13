@@ -21,6 +21,8 @@ import CustomSwitch from '../components/CustomSwitch';
 import ListItem from '../components/ListItem';
 import CustomHeader from '../components/CustomHeader';
 import MarqueeView from 'react-native-marquee-view';
+import strings from '../constants/lng/LocalizedStrings';
+
 export default function HomeScreen({ navigation }) {
   const [gamesTab, setGamesTab] = useState(1);
 
@@ -53,7 +55,7 @@ export default function HomeScreen({ navigation }) {
         </MarqueeView>
         <View style={{ padding: 5 }}>
           <View style={styles.topHeding} >
-            <Text style={styles.title} >Top Branches</Text>
+            <Text style={styles.title} >{strings.TOP_BRANCHES}</Text>
             <TouchableOpacity onPress={()=> navigation.navigate('BranchesViewAll')} >
               <Text style={styles.viewAll} >View All</Text>
             </TouchableOpacity>
@@ -78,7 +80,7 @@ export default function HomeScreen({ navigation }) {
         </View>
         <View style={{ padding: 5 }} >
         <View style={styles.topHeding} >
-            <Text style={styles.title} >Top Announcement</Text>
+            <Text style={styles.title} >{strings.TOP_ANNOUNCEMENT}</Text>
             <TouchableOpacity>
               <Text style={styles.viewAll} >View All</Text>
             </TouchableOpacity>
