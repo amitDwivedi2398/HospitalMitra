@@ -9,16 +9,42 @@ import Carousel from 'react-native-snap-carousel';
 import { sliderData } from '../../model/data';
 import { windowWidth } from '../../utils/Dimensions';
 import BannerSlider from '../../components/BannerSlider';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 
 
 const renderBanner = ({ item, index }) => {
     return <BannerSlider data={item} />;
-  };
+};
 const FacilityScreen = ({ navigation }) => {
     const [images, setimages] = useState([
         { src: require('../../assets/ResultFindDoctor/img.png'), title: 'Dr. Vishwas Madhav Thakur', key: '1' },
     ]);
+
+
+    function TabA() {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.text}>Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him.</Text>
+            </View>
+        );
+    }
+    function TabB() {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.text}>Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him.</Text>
+            </View>
+        );
+    }
+    function TabC() {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.text}>Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him.</Text>
+            </View>
+        );
+    }
+
+    const Tab = createMaterialTopTabNavigator();
 
     return (
         <SafeAreaView style={styles.container} >
@@ -51,10 +77,10 @@ const FacilityScreen = ({ navigation }) => {
                                             }}
                                         />
                                         <View style={{ alignSelf: 'center' }} >
-                                            <Text style={{ width: 200 }} >{item.title}</Text>
+                                            <Text style={{ width: 200, fontFamily: 'Roboto-Medium', color: '#4584FF' }} >{item.title}</Text>
                                             <View style={styles.addresh}>
                                                 <TouchableOpacity  >
-                                                    <Text style={{ width: 200 }} >Address</Text>
+                                                    <Text style={{ width: 200, color: '#747474' }} >Address</Text>
                                                 </TouchableOpacity>
                                                 <Rating style={{ marginTop: 5, alignSelf: 'flex-start' }}
                                                     imageSize={12}
@@ -72,6 +98,14 @@ const FacilityScreen = ({ navigation }) => {
                         </View>
                     )}
                 />
+            </View>
+            <Text style={styles.heding} >Available Facilities</Text>
+            <View style={{ flex: 1, padding: 10 }} >
+                <Tab.Navigator>
+                    <Tab.Screen name='Tab A' component={TabA} />
+                    <Tab.Screen name='Tab B' component={TabB} />
+                    <Tab.Screen name='Tab C' component={TabC} />
+                </Tab.Navigator>
             </View>
         </SafeAreaView>
     );
@@ -116,6 +150,15 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '700',
         padding: 20
+    },
+    text: {
+    },
+    heding: {
+        color: '#4584FF',
+        fontFamily: 'Roboto-Bold',
+        fontSize: 18,
+        padding: 10,
+        marginLeft: 5
     }
 })
 
