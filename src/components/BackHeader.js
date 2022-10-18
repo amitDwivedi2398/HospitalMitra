@@ -5,22 +5,23 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 
-const BackHeader = ({onPress,TitleName}) => {
+const BackHeader = ({onPress,label}) => {
     const navigation = useNavigation('');
     return (
         <View>
             <View
                 style={{
                     flexDirection: 'row',
-                    justifyContent: 'space-between',
                     padding:7,
                     borderBottomWidth:1,
                     marginBottom:10,
-                    borderColor:'#4584FF'
+                    borderColor:'#4584FF',
+                    alignItems:'center'
                 }}>
                 <TouchableOpacity  onPress={onPress}>
-                    <AntDesign name="back" color={'#4584FF'} size={30} />
+                    <AntDesign name="left" color={'#4584FF'} size={25} />
                 </TouchableOpacity>
+                <Text style={{color:'#6E6E6E',fontFamily:'Roboto-Bold',fontSize:18,marginLeft:30}}>{label}</Text>
             </View>
         </View>
     );

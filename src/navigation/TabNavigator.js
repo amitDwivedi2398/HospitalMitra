@@ -21,6 +21,7 @@ import ToDoOpd from '../screens/HomePage/ToDoOpd';
 import InvestigationScreen from '../screens/HomePage/InvestigationScreen';
 import OptSchameCatagiry from '../screens/HomePage/OptSchameCatagiry';
 import DoctorAbout from '../screens/HomePage/DoctorAbout';
+import ChatScreen from '../screens/ChatScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -137,7 +138,7 @@ const TabNavigator = () => {
       />
       <Tab.Screen
         name="Chat"
-        component={FavoriteScreen}
+        component={ChatScreen}
         options={{
           tabBarIcon: ({color, size}) => (
             <Ionicons name="chatbubble-ellipses-outline" color={color} size={size} />

@@ -45,7 +45,9 @@ const DoctorDetails = ({ navigation }) => {
                             <View style={{ flex: 1 }}>
                                 <View style={styles.mainView} >
                                     <View style={styles.mainRow} >
-                                        <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('FacilityScreen')}>
+                                        <TouchableOpacity style={styles.btn}
+                                        //  onPress={() => navigation.navigate('FacilityScreen')}
+                                         >
                                             <Image
                                                 source={item.src}
                                                 style={{

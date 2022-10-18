@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, SafeAreaView, Image, } from 'react-native';
 import { color } from 'react-native-reanimated';
 import BackHeader from '../../components/BackHeader';
+import CustomButton from '../../components/CustomButton';
 
 const DoctorAbout = ({ navigation }) => {
     return (
@@ -20,7 +21,7 @@ const DoctorAbout = ({ navigation }) => {
                 <View style={styles.rowTwo}>
                 <Text style={[styles.txt,]} >1K</Text>
                     <Text style={styles.txt}>9.5</Text>
-                    <Text style={styles.txt}>₹50</Text>
+                    <Text style={[styles.txt,{marginRight:3}]}>₹50</Text>
                 </View>
                 <View>
                     <Text style={styles.about} >About Doctor</Text>
@@ -30,6 +31,10 @@ const DoctorAbout = ({ navigation }) => {
                     <Text style={styles.about} >OPD Schedule</Text>
                     <Text style={{color:'#6A6A6A'}} >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam maecenas in dignissim in habitant. Fermentum elementum turpis ultricies mauris. Lacus orci eget in purus.</Text>
                 </View>
+            </View>
+
+            <View style={{width:'90%',alignSelf:'center'}} >
+            <CustomButton label={'SEND ENQUIRY'} />
             </View>
         </SafeAreaView>
     );
@@ -82,7 +87,8 @@ const styles = StyleSheet.create({
     rowTwo:{
         flexDirection:'row',
         justifyContent:'space-between',
-        marginTop:5
+        marginTop:5,
+        marginLeft:10
     },
     about:{
         color:'#4584FF',

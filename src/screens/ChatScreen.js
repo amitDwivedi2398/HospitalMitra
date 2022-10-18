@@ -14,6 +14,7 @@ import {
   Alert,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 
 export default function FavoriteScreen({ navigation }) {
@@ -104,26 +105,17 @@ export default function FavoriteScreen({ navigation }) {
     ]);
     setInputMessage('');
   }
-
-  useEffect(() => {
-    navigation.setOptions({
-      title: '',
-      headerLeft: () => (
-        <View style={styles.headerLeft}>
+  return (
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
+      <View style={styles.headerLeft}>
           <TouchableOpacity
             style={{ paddingRight: 10 }}
             onPress={() => {
-              navigation.goBack();
+              navigation.openDrawer();
             }}
           >
-          <Ionicons size={18} name="angle-left" color="black" style={styles.iconStyle} />
-          
-            {/* <Icon
-              name='angle-left'
-              type='font-awesome'
-              size={30}
-              color='#fff'
-            /> */}
+          <AntDesign name="bars" color={'#4584FF'} size={30} />
           </TouchableOpacity>
           <Image
             style={styles.userProfileImage}
@@ -135,37 +127,21 @@ export default function FavoriteScreen({ navigation }) {
               justifyContent: 'center',
             }}
           >
-            <Text style={{ color: '#fff', fontWeight: '700', fontSize: 18 }}>
+            <Text style={{ color: '#4584FF', fontWeight: '700', fontSize: 18 }}>
               {chatUser.name}
             </Text>
-            <Text style={{ color: '#fff', fontWeight: '300' }}>
+            <Text style={{ color: '#4584FF', fontWeight: '300' }}>
               {chatUser.last_seen}
             </Text>
           </View>
         </View>
-      ),
-      headerRight: () => (
-        <TouchableOpacity
-          style={{ paddingRight: 10 }}
-          onPress={() => {
-            Alert.alert('Audio Call', 'Audio Call Button Pressed');
-          }}
-        >
-          <Ionicons size={18} name="call" color="black" style={styles.iconStyle} />
-        </TouchableOpacity>
-      ),
-    });
-  }, []);
-
-  return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={styles.container}>
         <FlatList
           style={{ backgroundColor: '#f2f2ff' }}
           inverted={true}
           data={JSON.parse(JSON.stringify(messages)).reverse()}
           renderItem={({ item }) => (
-            <TouchableWithoutFeedback>
+           <View>
+             <TouchableWithoutFeedback>
               <View style={{ marginTop: 6 }}>
                 <View
                   style={{
@@ -204,6 +180,7 @@ export default function FavoriteScreen({ navigation }) {
                 </View>
               </View>
             </TouchableWithoutFeedback>
+           </View>
           )}
         />
 
@@ -240,8 +217,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor:'#fff'
   },
-  userProfileImage: { height: '100%', aspectRatio: 1, borderRadius: 100 },
+  userProfileImage: { height: 50, aspectRatio: 1, borderRadius: 100 },
   container: {
     flex: 1,
     backgroundColor: '#f2f2ff',
