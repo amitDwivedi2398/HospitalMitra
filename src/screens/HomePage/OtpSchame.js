@@ -15,7 +15,7 @@ import BannerSlider from '../../components/BannerSlider';
 
 const renderBanner = ({ item, index }) => {
     return <BannerSlider data={item} />;
-  };
+};
 const OtpSchame = ({ navigation }) => {
     const [images, setimages] = useState([
         { src: require('../../assets/ResultFindDoctor/img.png'), title: 'Dr. Vishwas Madhav Thakur', key: '1' },
@@ -25,14 +25,14 @@ const OtpSchame = ({ navigation }) => {
         <SafeAreaView style={styles.container} >
             <CustomHeader />
             <View>
-            <Carousel
-          data={sliderData}
-          renderItem={renderBanner}
-          sliderWidth={windowWidth - 20}
-          itemWidth={300}
-          loop={true}
-          autoplay={true}
-        />
+                <Carousel
+                    data={sliderData}
+                    renderItem={renderBanner}
+                    sliderWidth={windowWidth - 20}
+                    itemWidth={300}
+                    loop={true}
+                    autoplay={true}
+                />
             </View>
             <View>
                 <FlatList
@@ -41,9 +41,9 @@ const OtpSchame = ({ navigation }) => {
                         <View style={{ flex: 1 }}>
                             <View style={styles.mainView} >
                                 <View style={styles.mainRow} >
-                                    <TouchableOpacity style={styles.btn }
-                                      onPress={() => navigation.navigate('DoctorAbout')}
-                                      >
+                                    <TouchableOpacity style={styles.btn}
+                                        onPress={() => navigation.navigate('DoctorAbout')}
+                                    >
                                         <Image
                                             source={item.src}
                                             style={{
@@ -54,11 +54,11 @@ const OtpSchame = ({ navigation }) => {
                                             }}
                                         />
                                         <View style={{ alignSelf: 'center' }} >
-                                            <Text style={{ width: 200,fontFamily: 'Inter-Bold',color:'#4584FF' }} >{item.title}</Text>
+                                            <Text style={{ width: 200, fontFamily: 'Inter-Bold', color: '#4584FF' }} >{item.title}</Text>
                                             <View style={styles.addresh}>
                                                 <TouchableOpacity  >
                                                     <Text style={{ width: 200 }} >Monday to Friday</Text>
-                                                    <Text style={{ width: 200,marginTop:5,color:'#6A6A6A',fontFamily: 'Inter-Bold' }} >2:00 PM - 5:00 PM</Text>
+                                                    <Text style={{ width: 200, marginTop: 5, color: '#6A6A6A', fontFamily: 'Inter-Bold' }} >2:00 PM - 5:00 PM</Text>
                                                 </TouchableOpacity>
                                             </View>
                                         </View>
