@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     SafeAreaView,
     View,
@@ -20,11 +20,71 @@ import TwitterSVG from '../assets/images/misc/twitter.svg';
 import CustomButton from '../components/CustomButton';
 import InputField from '../components/InputField';
 import OtpInputs from 'react-native-otp-inputs';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
 const OtpScreen = ({ navigation }) => {
   const [otp, setOTP] = useState('');
+  const [mobile, setMobile] = useState('');
+  const [storeddata,setStoreddata] = useState('')
+
+
+  const getData = async () => {
+    try {
+      const user_id = await AsyncStorage.getItem('user_id');
+      if (user_id !== null) {
+        console.log('@@@@@@@@', user_id);
+        setStoreddata(user_id);
+      }
+    } catch (e) {
+      console.log('no Value in login');
+    }
+  };
+  const getNumber = async () => {
+    axios
+      .get(
+        `http://hospitalmitra.in/newadmin/api/ApiCommonController/getuseruserid/${storeddata}`,
+      )
+      .then(response => {
+        console.log("<<<<<",response.data.data) 
+        const number = response.data.data[0].mobile_no
+        setMobile(number)
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    getData();
+    getNumber();
+  }, [storeddata]);
+  
+
+  const sendMobile = () => {
+    setOTP(false);
+    console.log(otp,mobile);
+    axios
+      .post(
+        ` http://hospitalmitra.in/newadmin/api/ApiCommonController/verify_otppp`,
+        {
+          otp: otp,
+          mobile_no:mobile,
+        },
+      )
+      .then(response => {
+        console.log(response.data);
+        if (response.data != null) {
+          navigation.replace('Home');
+        } else {
+          console.log('no id!');
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
     return (
         <SafeAreaView style={{ flex: 1, justifyContent: 'center' }}>
@@ -69,11 +129,12 @@ const OtpScreen = ({ navigation }) => {
                 inputContainerStyles={styles.otpContainer}
                 handleChange={code => setOTP(code)}
                 numberOfInputs={4}
+                autoFocusOnLoad
               />
               </View>
 
                 
-                <CustomButton label={"SUBMIT"} onPress={() => {navigation.navigate('Register') }} />
+                <CustomButton label={"SUBMIT"} onPress={sendMobile} />
 
                 {/* <Text style={{ textAlign: 'center', color: '#666', marginBottom: 30 }}>
                     Or, login with ...

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -20,11 +20,70 @@ import GoogleSVG from '../assets/images/misc/google.svg';
 import FacebookSVG from '../assets/images/misc/facebook.svg';
 import TwitterSVG from '../assets/images/misc/twitter.svg';
 import CustomButton from '../components/CustomButton';
-
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const RegisterScreen = ({ navigation }) => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
+  const [fullName, setfullName] = useState('');
+  const [number, setNumber] = useState('');
+  const [city, setCity] = useState('');
+  const [storeddata, setStoreddata] = useState('');
   const [dobLabel, setDobLabel] = useState('Date of Birth');
+
+  const _storeData = async id => {
+    try {
+      await AsyncStorage.setItem('user_id', JSON.stringify(id));
+      console.log('id Saved');
+    } catch (error) {
+      console.log('Some error in setting id');
+    }
+  };
+  const getData = async () => {
+    try {
+      const user_id = await AsyncStorage.getItem('user_id');
+      if (user_id !== null) {
+        console.log('success');
+        console.log('user_id ???????', user_id);
+        setStoreddata(user_id);
+        navigation.replace('Login');
+      }
+    } catch (e) {
+      console.log('no Value in login');
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, [storeddata]);
+
+  const postDataUsingSimplePostCall = async () => {
+    if (!fullName.trim() || !number.trim() || !city.trim()) {
+      alert("Enter Details");
+      return;
+    }
+    axios
+      .post('http://hospitalmitra.in/newadmin/api/ApiCommonController/userRegister', {
+        username:fullName,
+        mobile_no:number,
+        city:city,
+        dob:date,
+      })
+      .then(function (response) {
+        // handle success
+        // alert(JSON.stringify(response.data));
+        // save user Id
+        if (response.data !== null) {
+          _storeData(response.data.data.id);
+          navigation.replace('Login');
+        } else {
+          console.log('no id!');
+        }
+      })
+      .catch(function (error) {
+        // handle error
+        alert(error.message);
+      });
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: 'center' }}>
@@ -96,6 +155,8 @@ const RegisterScreen = ({ navigation }) => {
         </Text> */}
 
         <InputField
+        value={fullName}
+        onChangeText={setfullName}
           label={'Full Name'}
           icon={
             <Ionicons
@@ -108,6 +169,8 @@ const RegisterScreen = ({ navigation }) => {
         />
 
         <InputField
+        value={number}
+        onChangeText={setNumber}
           label={'Enter your Phone No. '}
           icon={
             <Ionicons
@@ -117,9 +180,10 @@ const RegisterScreen = ({ navigation }) => {
               style={{ marginRight: 5 }}
             />
           }
-          inputType="password"
         />
         <InputField
+        value={city}
+        onChangeText={setCity}
           label={'Enter your city '}
           icon={
             <Ionicons
@@ -129,7 +193,6 @@ const RegisterScreen = ({ navigation }) => {
               style={{ marginRight: 5 }}
             />
           }
-          inputType="password"
         />
          <View
           style={{
@@ -169,7 +232,7 @@ const RegisterScreen = ({ navigation }) => {
           }}
         />
 
-        <CustomButton label={'Register'} onPress={() => { }} />
+        <CustomButton label={'Register'} onPress={postDataUsingSimplePostCall} />
 
         {/* <View
           style={{
