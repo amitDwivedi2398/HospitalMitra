@@ -112,7 +112,7 @@ const OnboardingSlider = ({navigation}) => {
             <View style={{height: 50}}>
               <TouchableOpacity
                 style={styles.btn}
-                onPress={() => navigation.replace('Login')}>
+                onPress={() => navigation.replace('Register')}>
                 <Text style={{fontWeight: 'bold', fontSize: 15,color:'#fff'}}>
                   GET STARTED
                 </Text>

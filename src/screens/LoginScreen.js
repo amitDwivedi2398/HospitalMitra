@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -18,9 +18,64 @@ import TwitterSVG from '../assets/images/misc/twitter.svg';
 
 import CustomButton from '../components/CustomButton';
 import InputField from '../components/InputField';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 
 const LoginScreen = ({ navigation }) => {
+  const [storeddata,setStoreddata] = useState('')
+  const [userNumber,setUserNumber] = useState('')
+  const getData = async () => {
+    try {
+      const user_id = await AsyncStorage.getItem('user_id');
+      if (user_id !== null) {
+        console.log('@@@@@@@@', user_id);
+        setStoreddata(user_id);
+      }
+    } catch (e) {
+      console.log('no Value in login');
+    }
+  };
+  const getNumber = async () => {
+    axios
+      .get(
+        `http://hospitalmitra.in/newadmin/api/ApiCommonController/getuseruserid/${storeddata}`,
+      )
+      .then(response => {
+        console.log("<<<<<",response.data.data) 
+        const number = response.data.data[0].mobile_no
+        setUserNumber(number)
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    getData();
+    getNumber();
+  }, [storeddata]);
+
+  const sendMobile = () => {
+    console.log(userNumber);
+    axios
+      .post(
+        `http://hospitalmitra.in/newadmin/api/ApiCommonController/user_loginbypassword`,
+        {
+          mobile_no:userNumber,
+        },
+      )
+      .then(response => {
+        console.log(response.data);
+        if (response.data != null) {
+          navigation.replace('OtpScreen');
+        } else {
+          console.log('no id!');
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: 'center' }}>
       <View style={{ paddingHorizontal: 25 }}>
@@ -60,6 +115,8 @@ const LoginScreen = ({ navigation }) => {
 
         <InputField
           label={'Enter your Phone No. '}
+          value={userNumber}
+          onChangeText={setUserNumber}
           icon={
             <Ionicons
               name="phone-portrait-outline"
@@ -68,10 +125,9 @@ const LoginScreen = ({ navigation }) => {
               style={{ marginRight: 5 }}
             />
           }
-          inputType="password"
         />
 
-        <CustomButton label={"Login"} onPress={() => {navigation.navigate('OtpScreen') }} />
+        <CustomButton label={"Login"} onPress={sendMobile} />
 
         <Text style={{ textAlign: 'center', color: '#666', marginBottom: 30 }}>
           Or, login with ...

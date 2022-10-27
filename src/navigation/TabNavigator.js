@@ -1,94 +1,17 @@
 import React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 import HomeScreen from '../screens/HomeScreen';
-import CartScreen from '../screens/CartScreen';
-import FavoriteScreen from '../screens/FavoriteScreen';
-import GameDetailsScreen from '../screens/GameDetailsScreen';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import TopSheme from '../screens/TopSheme';
-import BranchesViewAll from '../screens/HomePage/BranchesViewAll';
-import CenterNameScreen from '../screens/HomePage/CenterNameScreen';
-import DoctorDetails from '../screens/HomePage/DoctorDetails';
-import FacilityScreen from '../screens/HomePage/FacilityScreen';
-import OtpSchame from '../screens/HomePage/OtpSchame';
-import ToDoOpd from '../screens/HomePage/ToDoOpd';
-import InvestigationScreen from '../screens/HomePage/InvestigationScreen';
-import OptSchameCatagiry from '../screens/HomePage/OptSchameCatagiry';
-import DoctorAbout from '../screens/HomePage/DoctorAbout';
 import ChatScreen from '../screens/ChatScreen';
+import NoticeScreen from '../screens/NoticeScreen';
 
 const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
-
-const HomeStack = () => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="BranchesViewAll"
-        component={BranchesViewAll}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="CenterNameScreen"
-        component={CenterNameScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="DoctorDetails"
-        component={DoctorDetails}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="FacilityScreen"
-        component={FacilityScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="OtpSchame"
-        component={OtpSchame}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="ToDoOpd"
-        component={ToDoOpd}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="InvestigationScreen"
-        component={InvestigationScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="OptSchameCatagiry"
-        component={OptSchameCatagiry}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="DoctorAbout"
-        component={DoctorAbout}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="GameDetails"
-        component={GameDetailsScreen}
-        options={({route}) => ({
-          title: route.params?.title,
-        })}
-      />
-    </Stack.Navigator>
-  );
-};
 
 const TabNavigator = () => {
   return (
@@ -101,8 +24,8 @@ const TabNavigator = () => {
         tabBarActiveTintColor: 'yellow',
       }}>
       <Tab.Screen
-        name="Home"
-        component={HomeStack}
+        name="Home1"
+        component={HomeScreen}
         options={({route}) => ({
           tabBarStyle: {
             display: getTabBarVisibility(route),
@@ -116,7 +39,7 @@ const TabNavigator = () => {
       />
       <Tab.Screen
         name="Notice"
-        component={CartScreen}
+        component={NoticeScreen}
         options={{
           // tabBarBadge: 3,
           tabBarBadgeStyle: {backgroundColor: 'yellow'},

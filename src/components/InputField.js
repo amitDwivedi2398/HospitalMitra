@@ -8,6 +8,8 @@ export default function InputField({
   keyboardType,
   fieldButtonLabel,
   fieldButtonFunction,
+  value,
+  onChangeText
 }) {
   return (
     <View
@@ -21,6 +23,8 @@ export default function InputField({
       {icon}
       {inputType == 'password' ? (
         <TextInput
+        value={value}
+        onChangeText={onChangeText}
           placeholder={label}
           keyboardType={keyboardType}
           style={{flex: 1, paddingVertical: 0}}
@@ -28,6 +32,8 @@ export default function InputField({
         />
       ) : (
         <TextInput
+        value={value}
+        onChangeText={onChangeText}
           placeholder={label}
           keyboardType={keyboardType}
           style={{flex: 1, paddingVertical: 0}}

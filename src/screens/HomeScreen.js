@@ -36,7 +36,7 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <CustomHeader TitleName={'City Hospital Mitra'} />
+      <CustomHeader TitleName={'Hospital Mitra'} />
 
       <ScrollView style={{ padding: 10 }}>
         <Carousel

@@ -1,5 +1,5 @@
 export default {
-    TOP_BRANCHES: 'Top Branches ',
+    TOP_BRANCHES: 'Branches ',
     TOP_ANNOUNCEMENT: "Top Announcement",
     CONFIRMED: "CONFIRMED",
     RECOVERED: "RECOVERED",

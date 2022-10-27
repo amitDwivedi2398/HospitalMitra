@@ -1,5 +1,6 @@
 import React from 'react';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import CustomDrawer from '../components/CustomDrawer';
 
@@ -8,9 +9,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import ProfileScreen from '../screens/ProfileScreen';
-import MessagesScreen from '../screens/MessagesScreen';
-import MomentsScreen from '../screens/MomentsScreen';
-import SettingsScreen from '../screens/SettingsScreen';
 
 import TabNavigator from './TabNavigator';
 import Booking from '../screens/Booking';
@@ -19,8 +17,111 @@ import Feedback from '../screens/DrawerPages/Feedback';
 import About from '../screens/DrawerPages/About';
 import TermsCondtion from './TermsCondtion';
 import Contact from '../screens/DrawerPages/Contact';
+import HomeScreen from '../screens/HomeScreen';
+import BranchesViewAll from '../screens/HomePage/BranchesViewAll';
+import CenterNameScreen from '../screens/HomePage/CenterNameScreen';
+import DoctorDetails from '../screens/HomePage/DoctorDetails';
+import FacilityScreen from '../screens/HomePage/FacilityScreen';
+import OtpSchame from '../screens/HomePage/OtpSchame';
+import ToDoOpd from '../screens/HomePage/ToDoOpd';
+import InvestigationScreen from '../screens/HomePage/InvestigationScreen';
+import OptSchameCatagiry from '../screens/HomePage/OptSchameCatagiry';
+import DoctorAbout from '../screens/HomePage/DoctorAbout';
+import NotificationScreen from '../screens/NotificationScreen';
+import NoticeDetails from '../screens/NoticeDetails';
+import GameDetailsScreen from '../screens/GameDetailsScreen';
+import OnboardingScreen from '../screens/OnboardingScreen';
+import OnboardingSlider from '../screens/OnboardingSlider';
+import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
+import OtpScreen from '../screens/OtpScreen';
 
 const Drawer = createDrawerNavigator();
+const Stack = createNativeStackNavigator();
+
+const HomeStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+       name="Onboarding" 
+       component={OnboardingScreen} 
+       options={{ headerShown: false }}
+       />
+      <Stack.Screen name="OnboardingSlider" component={OnboardingSlider}  options={{ headerShown: false }}/>
+      <Stack.Screen name="Login" component={LoginScreen}  options={{ headerShown: false }}/>
+      <Stack.Screen name="Register" component={RegisterScreen}  options={{ headerShown: false }}/>
+      <Stack.Screen name="OtpScreen" component={OtpScreen}  options={{ headerShown: false }}/>
+      <Stack.Screen
+        name="Home"
+        component={TabNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="BranchesViewAll"
+        component={BranchesViewAll}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CenterNameScreen"
+        component={CenterNameScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="DoctorDetails"
+        component={DoctorDetails}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="FacilityScreen"
+        component={FacilityScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="OtpSchame"
+        component={OtpSchame}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ToDoOpd"
+        component={ToDoOpd}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="InvestigationScreen"
+        component={InvestigationScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="OptSchameCatagiry"
+        component={OptSchameCatagiry}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="DoctorAbout"
+        component={DoctorAbout}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="NotificationScreen"
+        component={NotificationScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="NoticeDetails"
+        component={NoticeDetails}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="GameDetails"
+        component={GameDetailsScreen}
+        options={({ route }) => ({
+          title: route.params?.title,
+        })}
+      />
+
+    </Stack.Navigator>
+  );
+};
 
 const AuthStack = () => {
   return (
@@ -39,9 +140,9 @@ const AuthStack = () => {
       }}>
       <Drawer.Screen
         name="Home"
-        component={TabNavigator}
+        component={HomeStack}
         options={{
-          drawerIcon: ({color}) => (
+          drawerIcon: ({ color }) => (
             <Ionicons name="home-outline" size={22} color={color} />
           ),
         }}
@@ -50,7 +151,7 @@ const AuthStack = () => {
         name="My Profile"
         component={ProfileScreen}
         options={{
-          drawerIcon: ({color}) => (
+          drawerIcon: ({ color }) => (
             <Ionicons name="person-outline" size={22} color={color} />
           ),
         }}
@@ -59,7 +160,7 @@ const AuthStack = () => {
         name="My Blog"
         component={Booking}
         options={{
-          drawerIcon: ({color}) => (
+          drawerIcon: ({ color }) => (
             <Ionicons name="pricetag-outline" size={22} color={color} />
           ),
         }}
@@ -68,7 +169,7 @@ const AuthStack = () => {
         name="Membership"
         component={Membership}
         options={{
-          drawerIcon: ({color}) => (
+          drawerIcon: ({ color }) => (
             <MaterialIcons name="card-membership" size={22} color={color} />
           ),
         }}
@@ -77,7 +178,7 @@ const AuthStack = () => {
         name="Feedback"
         component={Feedback}
         options={{
-          drawerIcon: ({color}) => (
+          drawerIcon: ({ color }) => (
             <MaterialIcons name="feedback" size={22} color={color} />
           ),
         }}
@@ -86,7 +187,7 @@ const AuthStack = () => {
         name="About Hospital"
         component={About}
         options={{
-          drawerIcon: ({color}) => (
+          drawerIcon: ({ color }) => (
             <Ionicons name="md-information-circle-outline" size={22} color={color} />
           ),
         }}
@@ -95,12 +196,12 @@ const AuthStack = () => {
         name="Contact"
         component={Contact}
         options={{
-          drawerIcon: ({color}) => (
+          drawerIcon: ({ color }) => (
             <AntDesign name="contacts" size={22} color={color} />
           ),
         }}
       />
-      
+
     </Drawer.Navigator>
   );
 };

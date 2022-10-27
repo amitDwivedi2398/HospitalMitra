@@ -11,17 +11,17 @@ import ReadMore from 'react-native-read-more-text';
 
 
 
-const TopSheme = ({ navigation }) => {
+const NoticeScreen = ({ navigation }) => {
   const _renderTruncatedFooter = (handlePress) =>{
     return (
-        <View style={{flexDirection:'row',justifyContent:'space-between'}} >
-          <Text style={{marginTop: 5,color:'#4584FF'}} onPress={handlePress}>
-          Read more
-        </Text>
-          <Text style={{marginTop: 5,color:'#4584FF'}} >
-          My Hospital
-        </Text>
-        </View>
+      <View style={{flexDirection:'row',justifyContent:'space-between'}} >
+      <Text style={{marginTop: 5,color:'#4584FF'}} onPress={handlePress}>
+      Read more
+    </Text>
+      <Text style={{marginTop: 5,color:'#4584FF'}} >
+      My Hospital
+    </Text>
+    </View>
       );
 };
 const _renderRevealedFooter = (handlePress) =>{
@@ -53,20 +53,25 @@ const _renderRevealedFooter = (handlePress) =>{
             numberOfLines={3}
             renderTruncatedFooter={_renderTruncatedFooter}
             renderRevealedFooter={_renderRevealedFooter}>
-          <Text style={styles.txt}>Ayushman Bharat is a universal health insurance scheme of the Ministry of Health and Family Welfare, Government of India. PMJAY was launched to provide free healthcare services to more than 40% population of the country. The scheme offers a health cover of Rs 5 Lakh.</Text>
-          </ReadMore>
+            <Text style={styles.txt}>Ayushman Bharat is a universal health insurance scheme of the Ministry of Health and Family Welfare, Government of India. PMJAY was launched to provide free healthcare services to more than 40% population of the country. The scheme offers a health cover of Rs 5 Lakh.</Text>
+            </ReadMore>
         </View>
         <View style={styles.swiming}>
           <Image style={styles.poolimg} source={require('../assets/images/pmsby.jpg')} />
           <Text style={styles.swimingTxt} >Pradhan Mantri Suraksha Bima Yojana:</Text>
-          <Text style={styles.txt}>Pradhan Mantri Suraksha Bima Yojana aims to provide accident insurance cover to the people of India. People in the age group of 18 years to 70 years who have an account in a bank can avail benefit from this scheme.</Text>
+          <ReadMore
+            numberOfLines={3}
+            renderTruncatedFooter={_renderTruncatedFooter}
+            renderRevealedFooter={_renderRevealedFooter}>
+            <Text style={styles.txt}>Pradhan Mantri Suraksha Bima Yojana aims to provide accident insurance cover to the people of India. People in the age group of 18 years to 70 years who have an account in a bank can avail benefit from this scheme.</Text>
+          </ReadMore>
         </View>
         <View style={styles.swiming}>
           <Image style={styles.poolimg} source={require('../assets/images/pmjay.jpg')} />
           <Text style={styles.swimingTxt} >Ayushman Bharat Yojana:</Text>
           <Text style={styles.txt}>Ayushman Bharat is a universal health insurance scheme of the Ministry of Health and Family Welfare, Government of India. PMJAY was launched to provide free healthcare services to more than 40% population of the country. The scheme offers a health cover of Rs 5 Lakh.</Text>
         </View>
-        <View style={[styles.swiming,{marginVertical:10}]}>
+        <View style={[styles.swiming, { marginVertical: 10 }]}>
           <Image style={styles.poolimg} source={require('../assets/images/pmsby.jpg')} />
           <Text style={styles.swimingTxt} >Pradhan Mantri Suraksha Bima Yojana:</Text>
           <Text style={styles.txt}>Pradhan Mantri Suraksha Bima Yojana aims to provide accident insurance cover to the people of India. People in the age group of 18 years to 70 years who have an account in a bank can avail benefit from this scheme.</Text>
@@ -119,11 +124,11 @@ const styles = StyleSheet.create({
   },
   swiming: {
     height: 'auto', width: '95%', justifyContent: 'center',
-     backgroundColor: '#fff', padding: 10,
+    backgroundColor: '#fff', padding: 10,
     alignSelf: 'center', borderRadius: 10, shadowColor: 'blue',
     elevation: 7,
     shadowRadius: 10,
-    marginTop:10
+    marginTop: 10
   },
   swimingTxt: {
     color: '#4584FF',
@@ -136,25 +141,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  secondSection:{
+  secondSection: {
     height: 'auto',
-     width: '95%',
-     backgroundColor: '#fff', 
-     padding: 10,
-    alignSelf: 'center', 
-    borderRadius: 10, 
+    width: '95%',
+    backgroundColor: '#fff',
+    padding: 10,
+    alignSelf: 'center',
+    borderRadius: 10,
     shadowColor: 'blue',
     elevation: 7,
     shadowRadius: 10,
-    flexDirection:'row',
-    marginVertical:10,
-    justifyContent:'space-between',
-    alignItems:'center'
-    
+    flexDirection: 'row',
+    marginVertical: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center'
+
   },
-  leftSection:{
+  leftSection: {
     height: 'auto', width: '75%', padding: 10,
   }
 })
 
-export default TopSheme;
+export default NoticeScreen;
