@@ -1,17 +1,39 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, SafeAreaView, Image, } from 'react-native';
 import { color } from 'react-native-reanimated';
 import BackHeader from '../../components/BackHeader';
 import CustomButton from '../../components/CustomButton';
 
-const DoctorAbout = ({ navigation }) => {
+const DoctorAbout = ({ navigation,route }) => {
+    const {id} = route.params;
+    console.log("ID ??",id);
+    const [doctor, setDoctor] = useState([])
+    
+    const getDocter = async () => {
+        axios
+            .get(
+                `http://hospitalmitra.in/newadmin/api/ApiCommonController/doctorlist1/${id}`,
+            )
+            .then(response => {
+                console.log("Docter About  <<<<<", response.data.data);
+                const res = response.data.data
+                setDoctor(res[0])
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+    useEffect(() => {
+        getDocter();
+    }, []);
     return (
         <SafeAreaView style={styles.container} >
             <BackHeader TitleName={'name'} onPress={() => navigation.navigate('OtpSchame')} />
             <View style={styles.mainContainer} >
-                <Image style={styles.img} source={require('../../assets/ResultFindDoctor/img02.png')} />
-                <Text style={styles.docName} >Dr. Vishwas Madhav Thakur</Text>
-                <Text style={styles.subTitle} >General Physician, General Practitioner
+                <Image style={styles.img} source={{ uri: `${doctor.image}` }} />
+                <Text style={styles.docName} >{doctor.doctor_name}</Text>
+                <Text style={styles.subTitle} >{doctor.designation}
                 </Text>
                 <View style={styles.row} >
                     <Text style={styles.rowtxt} >Patients</Text>
@@ -19,17 +41,17 @@ const DoctorAbout = ({ navigation }) => {
                     <Text style={styles.rowtxt}>Fees</Text>
                 </View>
                 <View style={styles.rowTwo}>
-                <Text style={[styles.txt,]} >1K</Text>
-                    <Text style={styles.txt}>9.5</Text>
-                    <Text style={[styles.txt,{marginRight:3}]}>₹50</Text>
+                <Text style={[styles.txt,]} >{doctor.patients}</Text>
+                    <Text style={styles.txt}>{doctor.experiance}</Text>
+                    <Text style={[styles.txt,{marginRight:3}]}>{doctor.fees}</Text>
                 </View>
                 <View>
                     <Text style={styles.about} >About Doctor</Text>
-                    <Text style={{color:'#6A6A6A'   }} >Dr. V.M. Thakur has 18 years of experience as General Physician and intensivist. He has Vast Experience as consultant in Medanta The Medicity Hopital sector 38 Gurgaon ,Kailash Hospital Noida and UCMS & GTBH Delhi in Medical and surgical ICU. He is also member of ISCCM (Indian Society of Critical Care Medicine).</Text>
+                    <Text style={{color:'#6A6A6A'}} >{doctor.about_doctor}</Text>
                 </View>
                 <View>
                     <Text style={styles.about} >OPD Schedule</Text>
-                    <Text style={{color:'#6A6A6A'}} >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam maecenas in dignissim in habitant. Fermentum elementum turpis ultricies mauris. Lacus orci eget in purus.</Text>
+                    <Text style={{color:'#6A6A6A'}} >{doctor.opd_schedule}</Text>
                 </View>
             </View>
 
@@ -88,7 +110,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'space-between',
         marginTop:5,
-        marginLeft:10
+        marginLeft:10,
     },
     about:{
         color:'#4584FF',

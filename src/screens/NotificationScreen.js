@@ -1,38 +1,54 @@
-import React from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, SafeAreaView, ScrollView, Image } from 'react-native';
 import BackHeader from '../components/BackHeader';
 
 const NotificationScreen = ({navigation}) => {
+    const [notification, setNotification] = useState([]);
+  const [storeddata, setStoreddata] = useState('');
+  const getData = async () => {
+    try {
+        const user_id = await AsyncStorage.getItem('user_id');
+        if (user_id !== null) {
+            console.log('@@@@@@@@', user_id);
+            setStoreddata(user_id);
+        }
+    } catch (e) {
+        console.log('no Value in login');
+    }
+};
+  const getNotification = async () => {
+    axios
+      .get(
+        `http://hospitalmitra.in/newadmin/api/ApiCommonController/notificationmedical/${storeddata}`,
+      )
+      .then(response => {
+        console.log("Notification list <<<<<",response.data.data);
+        setNotification(response.data.data)
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    getData()
+   getNotification()
+  }, [storeddata])
     return (
         <SafeAreaView style={styles.container} >
             <BackHeader label={'Notification'} onPress={() => navigation.goBack()} />
             <ScrollView>
+            {notification?.map((item)=>(
                 <View style={styles.swiming}>
-                    <Text style={styles.swimingTxt} >New Scheme Alert: Pradhan Mantri Jan Arogya Yojana</Text>
-                    <Text style={styles.txt}>PM-JAY refers to a specialised health insurance policy, which is available to all economically-challenged citizens of India. One such household can claim medical insurance coverage of up to Rs.5 lakh per year by paying premiums of Rs.30 annually.
-                    </Text>
+                    <Text style={styles.swimingTxt} >{item.title}</Text>
+                    <Text style={styles.txt}>{item.message}</Text>
                     <View style={{flexDirection:'row',justifyContent:'space-between',marginTop:5}} >
-                        <Text style={{color:'#4586FF'}} >20/8/2022</Text>
-                        <Text style={{color:'#4586FF'}}>10:00 AM</Text>
+                        <Text style={{color:'#4586FF'}} >{item.created_date}</Text>
+                        <Text style={{color:'#4586FF'}}>{item.time}</Text>
                     </View>
                 </View>
-                <View style={styles.swiming}>
-                    <Text style={styles.swimingTxt} >Your Follow-up with Dr. John Doe is next week.Book your appointment now.</Text>
-                </View>
-                <View style={[styles.secondSection]}>
-                    <Image style={{
-                        width: 100,
-                        height: 150,
-                        borderRadius: 15
-                    }} source={require('../assets/images/FarCry6.png')} />
-                    <View style={styles.leftSection}>
-                        <Text style={styles.swimingTxt}>Anaerobic exercise: What it is and how it affects the body</Text>
-                        <Text style={styles.txt}>You’ve most likely heard of anaerobic exercise before, but how much do you know about the science behind this vital aspect of your physical fitness? Enhancing your comprehension of the anaerobic energy system is a sure-fire way to empower yourself and give your workouts a boost.</Text>
-                    </View>
-                </View>
-                <View >
-                <Image style={styles.banner} source={require('../assets/images/departmentHospital.png')} />
-                </View>
+                ))}
             </ScrollView>
         </SafeAreaView>
     );

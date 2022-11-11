@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react'
 import { SafeAreaView, View, Text, TouchableOpacity,Image } from 'react-native';
 
@@ -6,8 +7,13 @@ import Gaming from '../assets/images/misc/gaming.svg';
 
 const OnboardingScreen = ({navigation}) => {
   setTimeout(async () => {
+    const value = await AsyncStorage.getItem('user_id');
+    if (value !== null) {
+      navigation.replace('Home');
+    } else {
       navigation.replace('OnboardingSlider');
-  }, 2000);
+    }
+  }, 1000);
   return (
     <SafeAreaView
       style={{

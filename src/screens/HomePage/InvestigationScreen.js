@@ -1,34 +1,82 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Text, SafeAreaView, Image, FlatList, TouchableOpacity } from 'react-native';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Text, SafeAreaView, Image, FlatList, TouchableOpacity, TextInput } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Carousel from 'react-native-snap-carousel';
 import BannerSlider from '../../components/BannerSlider';
 import CustomHeader from '../../components/CustomHeader';
 import { sliderData } from '../../model/data';
 import { windowWidth } from '../../utils/Dimensions';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const renderBanner = ({ item, index }) => {
     return <BannerSlider data={item} />;
 };
-const InvestigationScreen = () => {
-    const [images, setimages] = useState([
-        { src: require('../../assets/catagiry/home.png'), title: 'Sir Sunder Lal Modern Medicine', key: '1' },
-        { src: require('../../assets/catagiry/Ayurvedic.png'), title: 'Ayurvedic', key: '2' },
-        { src: require('../../assets/catagiry/dantal.png'), title: 'Dental', key: '3' },
-        { src: require('../../assets/catagiry/Homeopathic.png'), title: 'Homeopathic', key: '4' },
-        { src: require('../../assets/catagiry/Neurosurgery.png'), title: 'Neurosurgery', key: '5' },
-        { src: require('../../assets/catagiry/home.png'), title: 'Sir Sunder Lal Modern Medicine', key: '6' },
-    ]);
+const InvestigationScreen = ({navigation,route}) => {
+    const {id} = route.params;
+    const [schedule, setSchedule] = useState([])
+    const [filterData, setfilterData] = useState([]);
+    const [search, setSearch] = React.useState('');
+
+
+    const searchFilterFuntion = (text) => {
+        if (text) {
+            const newData = schedule.filter(
+                function (item) {
+                    const itemData = item.test_name
+                        ? item.test_name.toUpperCase() : ''.toUpperCase();
+                    const textData = text.toUpperCase();
+                    return itemData.indexOf(textData) > -1;
+                });
+            console.log(`new Data =` + JSON.stringify(newData));
+            setfilterData(newData);
+            setSearch(text);
+        } else {
+            setfilterData(schedule);
+            setSearch(text);
+        }
+    }
+    const getSchedule = async () => {
+        axios
+            .get(
+                `http://hospitalmitra.in/newadmin/api/ApiCommonController/investigationbyhospital/${id}`,
+            )
+            .then(response => {
+                console.log("Schedule name list id <<<<<", response.data.data);
+                const res = response.data.data
+                setSchedule(res)
+                setfilterData(res)
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+    useEffect(() => {
+        getSchedule();
+    }, []);
     return (
         <SafeAreaView style={{ flex: 1 }} >
             <ScrollView>
                 <CustomHeader />
+                <View style={styles.searchWrapperStyle}>
+                <Ionicons size={18} name="search-outline" color="white" style={styles.iconStyle} />
+                <TextInput
+                    style={{ flex: 1 }}
+                    onChangeText={(text) => searchFilterFuntion(text)}
+                    value={search}
+                    underlineColorAndroid='transparent'
+                    placeholder='Search Here'
+                    placeholderTextColor={'#fff'}
+                    placeholderColor={'#fff'}
+                    color={'#fff'}
+                />
+            </View>
                 <View>
                     <Carousel
                         data={sliderData}
                         renderItem={renderBanner}
-                        sliderWidth={windowWidth - 20}
-                        itemWidth={300}
+                        sliderWidth={windowWidth +5}
+                        itemWidth={310}
                         loop={true}
                         autoplay={true}
                     />
@@ -36,21 +84,22 @@ const InvestigationScreen = () => {
                 <View>
                     <FlatList
                         numColumns={2}
-                        data={images}
+                        data={filterData}
                         renderItem={({ item }) => (
                             <View style={{ flex: 1 }}>
                                 <View style={styles.mainView} >
                                     <View style={styles.mainRow} >
                                         <TouchableOpacity style={styles.btn} >
                                             <Image
-                                                source={item.src}
+                                                source={{ uri: `${item.image}` }}
                                                 style={{
                                                     width: 60,
-                                                    height: 50,
-                                                    alignSelf: 'center',
+                                                    height: 60,
+                                                    borderRadius:40,
+                                                    marginHorizontal:10
                                                 }}
                                             />
-                                            <Text style={styles.txt} >{item.title}</Text>
+                                            <Text style={styles.txt} >{item.test_name}</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -58,7 +107,7 @@ const InvestigationScreen = () => {
                         )}
                     />
                 </View>
-                <View style={{ padding: 5, marginVertical: 10, }} >
+                <View style={{  }} >
                     <View style={styles.sliderImg}>
                         <Image style={styles.baner} source={require('../../assets/images/departmentHospital.png')} />
                     </View>
@@ -70,43 +119,56 @@ const InvestigationScreen = () => {
 
 const styles = StyleSheet.create({
     mainView: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        alignSelf: 'center',
-        marginTop: 20
     },
     mainRow: {
-        width: '90%',
-        height: 110,
-        backgroundColor: '#F3F3F3',
-        borderRadius: 15,
-        justifyContent: 'center',
-        alignItems: 'center',
+        backgroundColor:'#fff',
+        width:'92%',
+        alignSelf:'center',
+        height:80,
+        justifyContent:'center',
+        borderRadius:10,
+        shadowColor: 'blue',
+        elevation: 7,
+        shadowRadius: 10,
+        marginVertical:10
+    },
+    btn: {
+        flexDirection:'row',
+        alignItems:'center',
+    },
+    txt: {
+      fontSize:18,
+      fontWeight:'600',
+      color:'black'
+    },
+    sliderImg: {
+        backgroundColor:'#fff',
+        height:130,
+        justifyContent:'center',
+        width:'92%',
+        alignSelf:'center',
+        borderRadius:10,
         shadowColor: 'blue',
         elevation: 7,
         shadowRadius: 10,
     },
-    btn: {
-        flex: 1,
-        justifyContent: 'center'
-    },
-    txt: {
-        alignSelf: 'center', marginTop: 5, textAlign: 'center', color: 'black', fontFamily: 'Roboto-Medium'
-    },
-    sliderImg: {
-        height: 120,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 10,
-        marginHorizontal: 5,
-        width: '100%'
-    },
     baner: {
         width: '95%',
-        height: 100,
-        marginHorizontal: 5,
+        height: 120,
         borderRadius: 10,
+        alignSelf:'center'
+    },
+    searchWrapperStyle: {
+        backgroundColor: "#4584FF",
+        flexDirection: "row",
+        marginVertical:10,
+        width:'95%',
+        borderRadius:25,
+        alignSelf:'center',
+    },
+    iconStyle: {
+        marginTop: 15,
+        marginHorizontal: 8,
     },
 })
 

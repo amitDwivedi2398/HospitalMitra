@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -14,6 +14,7 @@ import InputField from '../components/InputField';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
 import RegistrationSVG from '../assets/images/misc/registration.svg';
 import GoogleSVG from '../assets/images/misc/google.svg';
@@ -22,6 +23,8 @@ import TwitterSVG from '../assets/images/misc/twitter.svg';
 import CustomButton from '../components/CustomButton';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Picker } from '@react-native-picker/picker';
+
 const RegisterScreen = ({ navigation }) => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
@@ -29,8 +32,32 @@ const RegisterScreen = ({ navigation }) => {
   const [number, setNumber] = useState('');
   const [city, setCity] = useState('');
   const [storeddata, setStoreddata] = useState('');
+  const [cityList, setCityList] = useState([]);
   const [dobLabel, setDobLabel] = useState('Date of Birth');
-
+  const [language] = useState(
+    [
+      'Student',
+      'Teacher',
+      'Both',
+    ].sort()
+  );
+  const getCity = async () => {
+    axios
+      .get(
+        `http://hospitalmitra.in/newadmin/api/ApiCommonController/getcitylist`,
+      )
+      .then(response => {
+        console.log(" city name list <<<<<??", response.data.data);
+        const cityList = response.data.data;
+        setCityList(cityList)
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    getCity();
+  }, []);
   const _storeData = async id => {
     try {
       await AsyncStorage.setItem('user_id', JSON.stringify(id));
@@ -63,10 +90,10 @@ const RegisterScreen = ({ navigation }) => {
     }
     axios
       .post('http://hospitalmitra.in/newadmin/api/ApiCommonController/userRegister', {
-        username:fullName,
-        mobile_no:number,
-        city:city,
-        dob:date,
+        username: fullName,
+        mobile_no: number,
+        city: city,
+        dob: date,
       })
       .then(function (response) {
         // handle success
@@ -155,8 +182,8 @@ const RegisterScreen = ({ navigation }) => {
         </Text> */}
 
         <InputField
-        value={fullName}
-        onChangeText={setfullName}
+          value={fullName}
+          onChangeText={setfullName}
           label={'Full Name'}
           icon={
             <Ionicons
@@ -169,8 +196,8 @@ const RegisterScreen = ({ navigation }) => {
         />
 
         <InputField
-        value={number}
-        onChangeText={setNumber}
+          value={number}
+          onChangeText={setNumber}
           label={'Enter your Phone No. '}
           icon={
             <Ionicons
@@ -181,20 +208,30 @@ const RegisterScreen = ({ navigation }) => {
             />
           }
         />
-        <InputField
-        value={city}
-        onChangeText={setCity}
-          label={'Enter your city '}
-          icon={
-            <Ionicons
-              name="phone-portrait-outline"
+       <View style={{flexDirection:'row',alignItems:'center',borderBottomColor: '#ccc',
+        borderBottomWidth: 1,marginBottom:30}} >
+       <EvilIcons
+              name="location"
               size={20}
               color="#666"
-              style={{ marginRight: 5 }}
+              style={{}}
             />
-          }
-        />
-         <View
+        <Picker
+        style={{width:'80%',}}
+            selectedValue={city}
+            onValueChange={(itemVal) => {
+              setCity(itemVal);
+            }}
+          >
+            {
+              cityList.map((l) => (
+                <Picker.Item label={l.city_name} value={l.city_name} style={{ color: '#222' }} />
+              ))
+            }
+
+          </Picker>
+        </View>
+        <View
           style={{
             flexDirection: 'row',
             borderBottomColor: '#ccc',
@@ -206,10 +243,10 @@ const RegisterScreen = ({ navigation }) => {
             name="calendar-outline"
             size={20}
             color="#666"
-            style={{marginRight: 5}}
+            style={{ marginRight: 5 }}
           />
           <TouchableOpacity onPress={() => setOpen(true)}>
-            <Text style={{color: '#666', marginLeft: 5, marginTop: 5}}>
+            <Text style={{ color: '#666', marginLeft: 5, marginTop: 5 }}>
               {dobLabel}
             </Text>
           </TouchableOpacity>

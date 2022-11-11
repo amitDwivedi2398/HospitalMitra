@@ -1,23 +1,47 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, SafeAreaView, ScrollView, TextInput, FlatList, Image, TouchableOpacity, Alert } from 'react-native';
-import CustomHeader from '../../components/CustomHeader';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Rating } from 'react-native-ratings';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BackHeader from '../../components/BackHeader';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-
-
-
-const CenterNameScreen = ({route, navigation }) => {
-    const {id} = route.params;
+const FavoriteScreen = ({navigation}) => {
     const [hospitalList, setHospitalList] = useState([])
-    const [favId, setFavId] = useState('')
+    const [storeddata, setStoreddata] = useState('');
     const [filterData, setfilterData] = useState([]);
     const [search, setSearch] = React.useState('');
-
+    const getData = async () => {
+        try {
+            const user_id = await AsyncStorage.getItem('user_id');
+            if (user_id !== null) {
+                console.log('@@@@@@@@', user_id);
+                setStoreddata(user_id);
+            }
+        } catch (e) {
+            console.log('no Value in login');
+        }
+    };
+    const getBrachbyHospital = async () => {
+        axios
+            .get(
+                `http://hospitalmitra.in/newadmin/api/ApiCommonController/favoritebasedonuserid/${storeddata}`,
+            )
+            .then(response => {
+                console.log("FavoriteList name list id <<<<<", response.data.data);
+                const hospitalList = response.data.data
+                setHospitalList(hospitalList)
+                setfilterData(hospitalList)
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+    useEffect(() => {
+        getBrachbyHospital();
+        getData();
+    }, [storeddata]);
 
     const searchFilterFuntion = (text) => {
         if (text) {
@@ -37,27 +61,8 @@ const CenterNameScreen = ({route, navigation }) => {
         }
     }
 
-    const getBrachbyHospital = async () => {
-        axios
-            .get(
-                `http://hospitalmitra.in/newadmin/api/ApiCommonController/hospitallistbybranch/${id}`,
-            )
-            .then(response => {
-                console.log("hospitallistbybranch name list id <<<<<", response.data.data);
-                const hospitalList = response.data.data
-                setHospitalList(hospitalList)
-                setfilterData(hospitalList)
-            })
-            .catch(error => {
-                console.log(error);
-            });
-    };
-    useEffect(() => {
-        getBrachbyHospital();
-    }, []);
-
-    const favorite = async (id)=>{
-        axios.post(`http://hospitalmitra.in/newadmin/api/ApiCommonController/favurite`,
+    const remove = async (id)=>{
+        axios.post(`http://hospitalmitra.in/newadmin/api/ApiCommonController/deletefavorite11`,
         {
             fav:id
         },
@@ -69,19 +74,20 @@ const CenterNameScreen = ({route, navigation }) => {
           .then(response => {
             console.log('////////', response.data);
             if(response.data){
-                alert("successfully favorite");
+                getBrachbyHospital()
+                alert("successfully remove item");
                 return;
             }
+            
           })
           .catch(error => {
             console.log(error);
           })    
     }
-
     return (
-        <SafeAreaView style={styles.container} >
-            <CustomHeader />
-            <View style={styles.searchWrapperStyle}>
+         <SafeAreaView style={styles.container} >
+                <BackHeader label={'Favorite List'} onPress={() => navigation.openDrawer()} />
+                <View style={styles.searchWrapperStyle}>
                 <Ionicons size={18} name="search-outline" color="white" style={styles.iconStyle} />
                 <TextInput
                     style={{ flex: 1 }}
@@ -94,7 +100,7 @@ const CenterNameScreen = ({route, navigation }) => {
                     color={'#fff'}
                 />
             </View>
-            <View>
+                <View style={{flex:1}} >
                 <FlatList
                     data={filterData}
                     keyExtractor={(item, index) => index.toString()}
@@ -130,8 +136,8 @@ const CenterNameScreen = ({route, navigation }) => {
                                         </View>
                                     </TouchableOpacity>
                                     <View style={styles.rightView}>
-                                        <TouchableOpacity  onPress={() => favorite(item.id)} > 
-                                            <MaterialIcons size={20} name="favorite" color="#4584FF" style={[styles.leftView,{marginRight:10}]} />
+                                        <TouchableOpacity onPress={() => remove(item.id)}> 
+                                            <MaterialIcons size={25} name="highlight-remove" color="#4584FF" style={[styles.leftView,{marginRight:10}]} />
                                         </TouchableOpacity>
                                     </View>
 
@@ -141,27 +147,19 @@ const CenterNameScreen = ({route, navigation }) => {
                     )}
                 />
             </View>
-        </SafeAreaView>
+         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-    },
-    searchWrapperStyle: {
-        backgroundColor: "#4584FF",
-        flexDirection: "row",
-    },
-    iconStyle: {
-        marginTop: 12,
-        marginHorizontal: 8,
+    container:{
+        flex:1,
+        backgroundColor:'#fff'
     },
     mainView: {
         flexDirection: 'row',
         alignSelf: 'center',
-        marginTop: 20
+        marginTop: 10
     },
     mainRow: {
         width: '90%',
@@ -182,7 +180,18 @@ const styles = StyleSheet.create({
     },
     rightView:{
         justifyContent:'center',
-    }
+    },
+    searchWrapperStyle: {
+        backgroundColor: "#4584FF",
+        flexDirection: "row",
+        borderRadius:30,
+        width:'95%',
+        alignSelf:'center'
+    },
+    iconStyle: {
+        marginTop: 15,
+        marginHorizontal: 8,
+    },
 })
 
-export default CenterNameScreen;
+export default FavoriteScreen;

@@ -15,9 +15,13 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function FavoriteScreen({ navigation }) {
+  const [storeddata, setStoreddata] = useState('');
+
   const [chatUser] = useState({
     name: 'Robert Henry',
     profile_image: 'https://randomuser.me/api/portraits/men/0.jpg',
@@ -78,6 +82,7 @@ export default function FavoriteScreen({ navigation }) {
   ]);
 
   const [inputMessage, setInputMessage] = useState('');
+  const [received, setReceived] = useState([]);
 
   function getTime(date) {
     var hours = date.getHours();
@@ -105,6 +110,67 @@ export default function FavoriteScreen({ navigation }) {
     ]);
     setInputMessage('');
   }
+  const getData = async () => {
+    try {
+        const user_id = await AsyncStorage.getItem('user_id');
+        if (user_id !== null) {
+            console.log('@@@@@@@@', user_id);
+            setStoreddata(user_id);
+        }
+    } catch (e) {
+        console.log('no Value in login');
+    }
+};
+const getRecevied = async () => {
+    axios
+        .get(
+            `http://hospitalmitra.in/newadmin/api/ApiCommonController/chatgetbyuserid/${storeddata}`,
+        )
+        .then(response => {
+            console.log("recevied data list <<<<<", response.data.data);
+            const list = response.data.data
+            setReceived(list)
+        })
+        .catch(error => {
+            console.log(error);
+        });
+};
+useEffect (() => {
+    getRecevied();
+    getData();
+}, [storeddata]);
+  const send = async (id)=>{
+    axios.post(`http://hospitalmitra.in/newadmin/api/ApiCommonController/chat`,
+    {
+      message:inputMessage
+    },
+    {
+        headers: {
+          user_id: await AsyncStorage.getItem('user_id'),
+        },
+      },)
+      .then(response => {
+        console.log('////////', response.data);
+        if (inputMessage === '') {
+          return setInputMessage('');
+        }
+        let t = getTime(new Date());
+        setMessages([
+          ...messages,
+          {
+            sender: currentUser.name,
+            message: inputMessage,
+            time: t,
+          },
+        ]);
+        setInputMessage('');
+        getRecevied()
+      })
+      .catch(error => {
+        console.log(error);
+      })    
+}
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
@@ -138,7 +204,7 @@ export default function FavoriteScreen({ navigation }) {
         <FlatList
           style={{ backgroundColor: '#f2f2ff' }}
           inverted={true}
-          data={JSON.parse(JSON.stringify(messages)).reverse()}
+          data={JSON.parse(JSON.stringify(received)).reverse()}
           renderItem={({ item }) => (
            <View>
              <TouchableWithoutFeedback>
@@ -192,15 +258,12 @@ export default function FavoriteScreen({ navigation }) {
               placeholder='Message'
               onChangeText={(text) => setInputMessage(text)}
               onSubmitEditing={() => {
-                sendMessage();
+                send();
               }}
             />
             <TouchableOpacity
               style={styles.messageSendView}
-              onPress={() => {
-                sendMessage();
-              }}
-            >
+              onPress={() => send()} >
               <Ionicons size={18} name="send" color="black" style={styles.iconStyle} />
             </TouchableOpacity>
           </View>

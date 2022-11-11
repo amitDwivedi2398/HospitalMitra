@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, SafeAreaView, ScrollView, TextInput, FlatList, Image, TouchableOpacity, Alert, ImageBackground } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -7,30 +7,85 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Rating } from 'react-native-ratings';
 import BackHeader from '../components/BackHeader';
 import ReadMore from 'react-native-read-more-text';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
 
 const TopSheme = ({ navigation }) => {
-  const _renderTruncatedFooter = (handlePress) =>{
+  const [sheme, setSheme] = useState([])
+  const [filterData, setfilterData] = useState([]);
+  const [search, setSearch] = React.useState('');
+  const [storeddata, setStoreddata] = useState('');
+
+  const getData = async () => {
+    try {
+        const user_id = await AsyncStorage.getItem('user_id');
+        if (user_id !== null) {
+            console.log('@@@@@@@@', user_id);
+            setStoreddata(user_id);
+        }
+    } catch (e) {
+        console.log('no Value in login');
+    }
+};
+  const getSheme = async () => {
+    axios
+      .get(
+        `http://hospitalmitra.in/newadmin/api/ApiCommonController/topscheme/${storeddata}`,
+      )
+      .then(response => {
+        console.log("Sheme name list  <<<<<", response.data.data);
+        const res = response.data.data
+        setSheme(res)
+        setfilterData(res)
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    getData();
+    getSheme();
+  }, [storeddata]);
+  const _renderTruncatedFooter = (handlePress) => {
     return (
-        <View style={{flexDirection:'row',justifyContent:'space-between'}} >
-          <Text style={{marginTop: 5,color:'#4584FF'}} onPress={handlePress}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
+        <Text style={{ marginTop: 5, color: '#4584FF' }} onPress={handlePress}>
           Read more
         </Text>
-          <Text style={{marginTop: 5,color:'#4584FF'}} >
+        <Text style={{ marginTop: 5, color: '#4584FF' }} >
           My Hospital
         </Text>
-        </View>
-      );
-};
-const _renderRevealedFooter = (handlePress) =>{
+      </View>
+    );
+  };
+  const _renderRevealedFooter = (handlePress) => {
     return (
-        <Text style={{ marginTop: 5,color:'#4584FF'}} onPress={handlePress}>
-          Show less
-        </Text>
-      );
-}
+      <Text style={{ marginTop: 5, color: '#4584FF' }} onPress={handlePress}>
+        Show less
+      </Text>
+    );
+  }
+  const searchFilterFuntion = (text) => {
+    if (text) {
+      const newData = sheme.filter(
+        function (item) {
+          const itemData = item.title
+            ? item.title.toUpperCase() : ''.toUpperCase();
+          const textData = text.toUpperCase();
+          return itemData.indexOf(textData) > -1;
+        }
+        );
+      console.log(`new Data =` + JSON.stringify(newData));
+      setfilterData(newData);
+      setSearch(text);
+    } else {
+      setfilterData(sheme);
+      setSearch(text);
+    }
+  }
   return (
     <SafeAreaView style={styles.container} >
       <CustomHeader TitleName={'Scheme'} />
@@ -39,6 +94,8 @@ const _renderRevealedFooter = (handlePress) =>{
           <Ionicons size={18} name="search-outline" color="white" style={styles.iconStyle} />
           <TextInput
             style={{ flex: 1 }}
+            onChangeText={(text) => searchFilterFuntion(text)}
+            value={search}
             underlineColorAndroid='transparent'
             placeholder='Search Here'
             placeholderTextColor={'#fff'}
@@ -46,31 +103,18 @@ const _renderRevealedFooter = (handlePress) =>{
             color={'#fff'}
           />
         </View>
+        {filterData?.map((item)=>(
         <View style={styles.swiming}>
-          <Image style={styles.poolimg} source={require('../assets/images/pmjay.jpg')} />
-          <Text style={styles.swimingTxt} >Ayushman Bharat Yojana:</Text>
+          <Image style={styles.poolimg} source={{uri: `${item.image}`}} />
+          <Text style={styles.swimingTxt} >{item.title}:</Text>
           <ReadMore
             numberOfLines={3}
             renderTruncatedFooter={_renderTruncatedFooter}
             renderRevealedFooter={_renderRevealedFooter}>
-          <Text style={styles.txt}>Ayushman Bharat is a universal health insurance scheme of the Ministry of Health and Family Welfare, Government of India. PMJAY was launched to provide free healthcare services to more than 40% population of the country. The scheme offers a health cover of Rs 5 Lakh.</Text>
+          <Text style={styles.txt}>{item.description}</Text>
           </ReadMore>
         </View>
-        <View style={styles.swiming}>
-          <Image style={styles.poolimg} source={require('../assets/images/pmsby.jpg')} />
-          <Text style={styles.swimingTxt} >Pradhan Mantri Suraksha Bima Yojana:</Text>
-          <Text style={styles.txt}>Pradhan Mantri Suraksha Bima Yojana aims to provide accident insurance cover to the people of India. People in the age group of 18 years to 70 years who have an account in a bank can avail benefit from this scheme.</Text>
-        </View>
-        <View style={styles.swiming}>
-          <Image style={styles.poolimg} source={require('../assets/images/pmjay.jpg')} />
-          <Text style={styles.swimingTxt} >Ayushman Bharat Yojana:</Text>
-          <Text style={styles.txt}>Ayushman Bharat is a universal health insurance scheme of the Ministry of Health and Family Welfare, Government of India. PMJAY was launched to provide free healthcare services to more than 40% population of the country. The scheme offers a health cover of Rs 5 Lakh.</Text>
-        </View>
-        <View style={[styles.swiming,{marginVertical:10}]}>
-          <Image style={styles.poolimg} source={require('../assets/images/pmsby.jpg')} />
-          <Text style={styles.swimingTxt} >Pradhan Mantri Suraksha Bima Yojana:</Text>
-          <Text style={styles.txt}>Pradhan Mantri Suraksha Bima Yojana aims to provide accident insurance cover to the people of India. People in the age group of 18 years to 70 years who have an account in a bank can avail benefit from this scheme.</Text>
-        </View>
+        ))}
       </ScrollView>
     </SafeAreaView>
   );
@@ -113,22 +157,24 @@ const styles = StyleSheet.create({
   },
   poolimg: {
     width: '100%',
-    height: 100,
+    height: 120,
     alignSelf: 'center',
-    borderRadius: 20
+    borderRadius: 20,
+    resizeMode: 'stretch'
   },
   swiming: {
     height: 'auto', width: '95%', justifyContent: 'center',
-     backgroundColor: '#fff', padding: 10,
+    backgroundColor: '#fff', padding: 10,
     alignSelf: 'center', borderRadius: 10, shadowColor: 'blue',
     elevation: 7,
     shadowRadius: 10,
-    marginTop:10
+    marginTop: 10
   },
   swimingTxt: {
     color: '#4584FF',
-    fontFamily: 'Roboto-Medium'
-
+    fontFamily: 'Roboto-Medium',
+    fontSize:18,
+    marginVertical:4
   },
   txt: {
     color: 'black',
@@ -136,23 +182,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  secondSection:{
+  secondSection: {
     height: 'auto',
-     width: '95%',
-     backgroundColor: '#fff', 
-     padding: 10,
-    alignSelf: 'center', 
-    borderRadius: 10, 
+    width: '95%',
+    backgroundColor: '#fff',
+    padding: 10,
+    alignSelf: 'center',
+    borderRadius: 10,
     shadowColor: 'blue',
     elevation: 7,
     shadowRadius: 10,
-    flexDirection:'row',
-    marginVertical:10,
-    justifyContent:'space-between',
-    alignItems:'center'
-    
+    flexDirection: 'row',
+    marginVertical: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center'
+
   },
-  leftSection:{
+  leftSection: {
     height: 'auto', width: '75%', padding: 10,
   }
 })

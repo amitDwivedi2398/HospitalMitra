@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, SafeAreaView, ScrollView, TextInput, FlatList, Image, TouchableOpacity, Alert, ImageBackground } from 'react-native';
 import CustomHeader from '../../components/CustomHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Rating } from 'react-native-ratings';
+import axios from 'axios';
 
 
 
 
 
-const DoctorDetails = ({ navigation }) => {
+const DoctorDetails = ({ navigation,route }) => {
+    const {id} = route.params;
+    const [hospitalDetails, setHospitalDetails] = useState([])
+    console.log("amit id",id);
     const [images, setimages] = useState([
         { src: require('../../assets/ResultFindDoctor/img.png'), title: 'Dr. Vishwas Madhav Thakur', key: '1' },
     ]);
@@ -20,6 +24,24 @@ const DoctorDetails = ({ navigation }) => {
         // { img: require('../../assets/images/team-of-doctors.jpg'), titleName: 'OPD Schedule', key: '3' },
         // { img: require('../../assets/images/departmentHospital.png'), titleName: 'Investigation and Intervention', key: '4' },
     ]);
+
+    const getHospitalDetails = async () => {
+        axios
+            .get(
+                `http://hospitalmitra.in/newadmin/api/ApiCommonController/hospitallistbyid/${id}`,
+            )
+            .then(response => {
+                console.log("getHospitalDetails name list id <<<<<", response.data.data);
+                const res = response.data.data
+                setHospitalDetails(res)
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+    useEffect(() => {
+        getHospitalDetails();
+    }, []);
 
 
     return (
@@ -40,7 +62,7 @@ const DoctorDetails = ({ navigation }) => {
                 </View>
                 <View>
                     <FlatList
-                        data={images}
+                        data={hospitalDetails}
                         renderItem={({ item }) => (
                             <View style={{ flex: 1 }}>
                                 <View style={styles.mainView} >
@@ -49,19 +71,20 @@ const DoctorDetails = ({ navigation }) => {
                                         //  onPress={() => navigation.navigate('FacilityScreen')}
                                          >
                                             <Image
-                                                source={item.src}
+                                                source={{ uri: `${item.image}` }}
                                                 style={{
-                                                    width: 50,
-                                                    height: 50,
+                                                    width: 60,
+                                                    height: 60,
                                                     alignSelf: 'center',
                                                     marginHorizontal: 10,
+                                                    borderRadius:50
                                                 }}
                                             />
                                             <View style={{ alignSelf: 'center' }} >
-                                                <Text style={{ width: 200 }} >{item.title}</Text>
+                                                <Text style={{ width: 200 }} >{item.name}</Text>
                                                 <View style={styles.addresh}>
                                                     <TouchableOpacity  >
-                                                        <Text style={{ width: 200 }} >Address</Text>
+                                                        <Text style={{ width: 200 }} >{item.address}</Text>
                                                     </TouchableOpacity>
                                                     <Rating style={{ marginTop: 5, alignSelf: 'flex-start' }}
                                                         imageSize={12}
@@ -87,14 +110,14 @@ const DoctorDetails = ({ navigation }) => {
                     renderItem={({ item }) => (
                         <View  >
                             <View style={styles.mainContainer}>
-                                <TouchableOpacity style={styles.sectonBtn} onPress={()=>navigation.navigate('ToDoOpd')}>
+                                <TouchableOpacity style={styles.sectonBtn} onPress={()=>navigation.navigate('ToDoOpd', {id:id})}>
                                     <ImageBackground imageStyle={{ borderRadius: 10 }} style={styles.sectionBgImage} source={item.img} resizeMode='cover'>
                                         <View style={styles.txtView}>
                                             <Text style={styles.txt} >{item.titleName}</Text>
                                         </View>
                                     </ImageBackground>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.sectonBtn} onPress={()=> navigation.navigate('FacilityScreen')}  >
+                                <TouchableOpacity style={styles.sectonBtn} onPress={()=> navigation.navigate('FacilityScreen',{id:id})}  >
                                     <ImageBackground imageStyle={{ borderRadius: 10 }} style={styles.sectionBgImage} source={item.img} resizeMode='cover'>
                                         <View style={styles.txtView}>
                                             <Text style={styles.txt} >Available Facilities</Text>
@@ -103,14 +126,14 @@ const DoctorDetails = ({ navigation }) => {
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.mainContainer}>
-                                <TouchableOpacity style={styles.sectonBtn} onPress={() => navigation.navigate('OptSchameCatagiry')}  >
+                                <TouchableOpacity style={styles.sectonBtn} onPress={() => navigation.navigate('OptSchameCatagiry',{id:id})}  >
                                     <ImageBackground imageStyle={{ borderRadius: 10 }} style={styles.sectionBgImage} source={item.img} resizeMode='cover'>
                                         <View style={styles.txtView}>
                                             <Text style={styles.txt} >OPD Schedule</Text>
                                         </View>
                                     </ImageBackground>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.sectonBtn} onPress={()=> navigation.navigate('InvestigationScreen')} >
+                                <TouchableOpacity style={styles.sectonBtn} onPress={()=> navigation.navigate('InvestigationScreen',{id:id})} >
                                     <ImageBackground imageStyle={{ borderRadius: 10 }} style={styles.sectionBgImage} source={item.img} resizeMode='cover'>
                                         <View style={styles.txtView}>
                                             <Text style={styles.txt} >Investigation and Intervention</Text>

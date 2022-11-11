@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, SafeAreaView, Image, FlatList, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Carousel from 'react-native-snap-carousel';
@@ -10,15 +11,26 @@ import { windowWidth } from '../../utils/Dimensions';
 const renderBanner = ({ item, index }) => {
     return <BannerSlider data={item} />;
 };
-const OptSchameCatagiry = ({navigation}) => {
-    const [images, setimages] = useState([
-        { src: require('../../assets/catagiry/home.png'), title: 'Sir Sunder Lal Modern Medicine', key: '1' },
-        { src: require('../../assets/catagiry/Ayurvedic.png'), title: 'Ayurvedic', key: '2' },
-        { src: require('../../assets/catagiry/dantal.png'), title: 'Dental', key: '3' },
-        { src: require('../../assets/catagiry/Homeopathic.png'), title: 'Homeopathic', key: '4' },
-        { src: require('../../assets/catagiry/Neurosurgery.png'), title: 'Neurosurgery', key: '5' },
-        { src: require('../../assets/catagiry/home.png'), title: 'Sir Sunder Lal Modern Medicine', key: '6' },
-    ]);
+const OptSchameCatagiry = ({navigation,route}) => {
+    const {id} = route.params;
+    const [schedule, setSchedule] = useState([])
+    const getSchedule = async () => {
+        axios
+            .get(
+                `http://hospitalmitra.in/newadmin/api/ApiCommonController/opdschedulebyhospital/${id}`,
+            )
+            .then(response => {
+                console.log("Schedule name list id <<<<<", response.data.data);
+                const res = response.data.data
+                setSchedule(res)
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+    useEffect(() => {
+        getSchedule();
+    }, []);
     return (
         <SafeAreaView style={{ flex: 1 }} >
             <ScrollView>
@@ -33,17 +45,17 @@ const OptSchameCatagiry = ({navigation}) => {
                         autoplay={true}
                     />
                 </View>
-                <View>
+                <View  >
                     <FlatList
                         numColumns={2}
-                        data={images}
+                        data={schedule}
                         renderItem={({ item }) => (
                             <View style={{ flex: 1 }}>
                                 <View style={styles.mainView} >
                                     <View style={styles.mainRow} >
-                                        <TouchableOpacity style={styles.btn}  onPress={() => navigation.navigate('OtpSchame')}>
+                                        <TouchableOpacity style={styles.btn}  onPress={() => navigation.navigate('OtpSchame',{id:item.id})}>
                                             <Image
-                                                source={item.src}
+                                                source={{ uri: `${item.image}` }}
                                                 style={{
                                                     width: 60,
                                                     height: 50,
@@ -58,7 +70,7 @@ const OptSchameCatagiry = ({navigation}) => {
                         )}
                     />
                 </View>
-                <View style={{ padding: 5, marginVertical: 10, }} >
+                <View style={{ padding: 5,  }} >
                     <View style={styles.sliderImg}>
                         <Image style={styles.baner} source={require('../../assets/images/departmentHospital.png')} />
                     </View>
@@ -92,7 +104,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     txt: {
-        alignSelf: 'center', marginTop: 5, textAlign: 'center', color: 'black', fontFamily: 'Roboto-Medium'
+        alignSelf: 'center', 
+        marginTop: 5, 
+        textAlign: 'center', 
+        color: 'black', 
+        fontFamily: 'Roboto-Medium'
     },
     sliderImg: {
         height: 120,
@@ -100,7 +116,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 10,
         marginHorizontal: 5,
-        width: '100%'
+        width: '100%',
     },
     baner: {
         width: '95%',

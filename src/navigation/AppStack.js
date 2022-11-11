@@ -35,6 +35,9 @@ import OnboardingSlider from '../screens/OnboardingSlider';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import OtpScreen from '../screens/OtpScreen';
+import TopSheme from '../screens/TopSheme';
+import NoticeScreen from '../screens/NoticeScreen';
+import FavoriteScreen from '../screens/DrawerPages/FavoriteScreen';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -112,6 +115,16 @@ const HomeStack = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="TopSheme"
+        component={TopSheme}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Notice"
+        component={NoticeScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="GameDetails"
         component={GameDetailsScreen}
         options={({ route }) => ({
@@ -165,7 +178,7 @@ const AuthStack = () => {
           ),
         }}
       />
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="Membership"
         component={Membership}
         options={{
@@ -173,8 +186,17 @@ const AuthStack = () => {
             <MaterialIcons name="card-membership" size={22} color={color} />
           ),
         }}
-      />
+      /> */}
       <Drawer.Screen
+        name="Favorite List"
+        component={FavoriteScreen}
+        options={{
+          drawerIcon: ({ color }) => (
+            <MaterialIcons name="favorite-outline" size={22} color={color} />
+          ),
+        }}
+      />
+      {/* <Drawer.Screen
         name="Feedback"
         component={Feedback}
         options={{
@@ -182,7 +204,7 @@ const AuthStack = () => {
             <MaterialIcons name="feedback" size={22} color={color} />
           ),
         }}
-      />
+      /> */}
       <Drawer.Screen
         name="About Hospital"
         component={About}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -15,8 +15,47 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DrawerActions } from '@react-navigation/native';
+import axios from 'axios';
+import RNRestart from 'react-native-restart';
+
 
 const CustomDrawer = props => {
+  const [storeProfile, setStoreProfile] = useState('');
+  const [userName, setUserName] = useState();
+  const [userImage, setUserImage] = useState();
+  const [number, setNumber] = useState();
+  const getDataProfile = async () => {
+    try {
+      const user_id = await AsyncStorage.getItem('user_id');
+      if (user_id !== null) {
+        console.log('@@@@@@@@', user_id);
+        setStoreProfile(user_id);
+      }
+    } catch (e) {
+      console.log('no Value in login');
+    }
+  };
+  const getProfile = async () => {
+    axios
+      .get(`http://hospitalmitra.in/newadmin/api/ApiCommonController/usersingledata/${storeProfile}`)
+      .then((response) => {
+        const userName = response.data.data[0].username
+        setUserName(userName);
+        console.log(userName);
+        const userImage = response.data.data[0].image
+        setUserImage(userImage);
+        setNumber(response.data.data[0].mobile_no)
+        console.log(userImage);
+        console.log("profle ///////", res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  useEffect(() => {
+    getProfile();
+    getDataProfile();
+  }, [storeProfile]);
   return (
     <View style={{flex: 1}}>
       <DrawerContentScrollView
@@ -27,13 +66,27 @@ const CustomDrawer = props => {
           style={{padding: 20}}>
          <View style={{flexDirection:'row',justifyContent:'space-around',alignItems:'center'}}>
          <View>
-         <Image
+         {userImage ?( <Image
+         source={{
+                  uri: userImage,
+                }}
+         style={{height: 80, width: 80, borderRadius: 40, marginBottom: 10}}
+       />):( <Image
          source={require('../assets/images/user-profile.jpg')}
          style={{height: 80, width: 80, borderRadius: 40, marginBottom: 10}}
-       />
+       />)}
+        
          </View>
           <View>
-          <Text
+          {userName ?(<Text
+            style={{
+              color: '#fff',
+              fontSize: 18,
+              fontFamily: 'Roboto-Medium',
+              marginBottom: 5,
+            }}>
+            {userName}
+          </Text>):(<Text
             style={{
               color: '#fff',
               fontSize: 18,
@@ -41,7 +94,7 @@ const CustomDrawer = props => {
               marginBottom: 5,
             }}>
             User Name
-          </Text>
+          </Text>)}
           <View style={{flexDirection: 'row'}}>
             <Text
               style={{
@@ -49,7 +102,7 @@ const CustomDrawer = props => {
                 fontFamily: 'Roboto-Regular',
                 marginRight: 5,
               }}>
-               8989898989
+               {number}
             </Text>
             <FontAwesome5 name="phone" size={14} color="#fff" />
           </View>
@@ -70,6 +123,7 @@ const CustomDrawer = props => {
           onPress={async () => {
             console.log('>>>>>>>>>>>');
             await AsyncStorage.removeItem('user_id');
+            RNRestart.Restart()
           }}
           style={{paddingVertical: 15}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>

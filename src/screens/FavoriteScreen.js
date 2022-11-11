@@ -1,265 +1,173 @@
-import React, { useState, useEffect } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  Keyboard,
-  ScrollView,
-  FlatList,
-  Dimensions,
-  Alert,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Text, SafeAreaView, ScrollView, TextInput, FlatList, Image, TouchableOpacity, Alert } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { Rating } from 'react-native-ratings';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import BackHeader from '../../components/BackHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+const FavoriteScreen = ({navigation}) => {
+    const [hospitalList, setHospitalList] = useState([])
+    const [storeddata, setStoreddata] = useState('');
+    const [filterData, setfilterData] = useState([]);
+    const [search, setSearch] = React.useState('');
+    const getData = async () => {
+        try {
+            const user_id = await AsyncStorage.getItem('user_id');
+            if (user_id !== null) {
+                console.log('@@@@@@@@', user_id);
+                setStoreddata(user_id);
+            }
+        } catch (e) {
+            console.log('no Value in login');
+        }
+    };
+    const getBrachbyHospital = async () => {
+        axios
+            .get(
+                `http://hospitalmitra.in/newadmin/api/ApiCommonController/favoritebasedonuserid/${storeddata}`,
+            )
+            .then(response => {
+                console.log("FavoriteList name list id <<<<<", response.data.data);
+                const hospitalList = response.data.data
+                setHospitalList(hospitalList)
+                setfilterData(hospitalList)
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+    useEffect(() => {
+        getBrachbyHospital();
+        getData();
+    }, [storeddata]);
 
-export default function FavoriteScreen({ navigation }) {
-  const [chatUser] = useState({
-    name: 'Robert Henry',
-    profile_image: 'https://randomuser.me/api/portraits/men/0.jpg',
-    last_seen: 'online',
-  });
-
-  const [currentUser] = useState({
-    name: 'John Doe',
-  });
-
-  const [messages, setMessages] = useState([
-    { sender: 'John Doe', message: 'Hey there!', time: '6:01 PM' },
-    {
-      sender: 'Robert Henry',
-      message: 'Hello, how are you doing?',
-      time: '6:02 PM',
-    },
-    {
-      sender: 'John Doe',
-      message: 'I am good, how about you?',
-      time: '6:02 PM',
-    },
-    {
-      sender: 'John Doe',
-      message: `😊😇`,
-      time: '6:02 PM',
-    },
-    {
-      sender: 'Robert Henry',
-      message: `Can't wait to meet you.`,
-      time: '6:03 PM',
-    },
-    {
-      sender: 'John Doe',
-      message: `That's great, when are you coming?`,
-      time: '6:03 PM',
-    },
-    {
-      sender: 'Robert Henry',
-      message: `This weekend.`,
-      time: '6:03 PM',
-    },
-    {
-      sender: 'Robert Henry',
-      message: `Around 4 to 6 PM.`,
-      time: '6:04 PM',
-    },
-    {
-      sender: 'John Doe',
-      message: `Great, don't forget to bring me some mangoes.`,
-      time: '6:05 PM',
-    },
-    {
-      sender: 'Robert Henry',
-      message: `Sure!`,
-      time: '6:05 PM',
-    },
-  ]);
-
-  const [inputMessage, setInputMessage] = useState('');
-
-  function getTime(date) {
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
-    var ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12;
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    var strTime = hours + ':' + minutes + ' ' + ampm;
-    return strTime;
-  }
-
-  function sendMessage() {
-    if (inputMessage === '') {
-      return setInputMessage('');
+    const searchFilterFuntion = (text) => {
+        if (text) {
+            const newData = hospitalList.filter(
+                function (item) {
+                    const itemData = item.name
+                        ? item.name.toUpperCase() : ''.toUpperCase();
+                    const textData = text.toUpperCase();
+                    return itemData.indexOf(textData) > -1;
+                });
+            console.log(`new Data =` + JSON.stringify(newData));
+            setfilterData(newData);
+            setSearch(text);
+        } else {
+            setfilterData(hospitalList);
+            setSearch(text);
+        }
     }
-    let t = getTime(new Date());
-    setMessages([
-      ...messages,
-      {
-        sender: currentUser.name,
-        message: inputMessage,
-        time: t,
-      },
-    ]);
-    setInputMessage('');
-  }
+    return (
+         <SafeAreaView style={styles.container} >
+                <BackHeader label={'Favorite List'} onPress={() => navigation.openDrawer()} />
+                <View style={styles.searchWrapperStyle}>
+                <Ionicons size={18} name="search-outline" color="white" style={styles.iconStyle} />
+                <TextInput
+                    style={{ flex: 1 }}
+                    onChangeText={(text) => searchFilterFuntion(text)}
+                    value={search}
+                    underlineColorAndroid='transparent'
+                    placeholder='Search Here'
+                    placeholderTextColor={'#fff'}
+                    placeholderColor={'#fff'}
+                    color={'#fff'}
+                />
+            </View>
+                <View style={{flex:1}} >
+                <FlatList
+                    data={filterData}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => (
+                        <View style={{ flex: 1 }}>
+                            <View style={styles.mainView} >
+                                <View style={styles.mainRow} >
+                                    <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('DoctorDetails' ,{id:item.id})} >
+                                        <Image
+                                            source={{ uri: `${item.image}` }}
+                                            style={{
+                                                width: 60,
+                                                height: 60,
+                                                alignSelf: 'center',
+                                                marginHorizontal: 10,
+                                                borderRadius:30
+                                            }}
+                                        />
+                                        <View style={{alignSelf:'center'}} >
+                                            <Text style={{width:200}} >{item.name}</Text>
+                                            <View style={styles.addresh}>
+                                                <TouchableOpacity  >
+                                                    <Text style={{width:200}} >{item.address}</Text>
+                                                </TouchableOpacity>
+                                                <Rating style={{marginTop:5,alignSelf:'flex-start'}}
+                                                imageSize={12}
+                                                tintColor='#F3F3F3'
+                                                    onFinishRating={(rating) => {
+                                                        Alert.alert('Star Rating: ' + JSON.stringify(rating));
+                                                    }}
+                                                />
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <View style={styles.rightView}>
+                                        <TouchableOpacity> 
+                                            <MaterialIcons size={25} name="highlight-remove" color="#4584FF" style={[styles.leftView,{marginRight:10}]} />
+                                        </TouchableOpacity>
+                                    </View>
 
-  useEffect(() => {
-    navigation.setOptions({
-      title: '',
-      headerLeft: () => (
-        <View style={styles.headerLeft}>
-          <TouchableOpacity
-            style={{ paddingRight: 10 }}
-            onPress={() => {
-              navigation.goBack();
-            }}
-          >
-          <Ionicons size={18} name="angle-left" color="black" style={styles.iconStyle} />
-          
-            {/* <Icon
-              name='angle-left'
-              type='font-awesome'
-              size={30}
-              color='#fff'
-            /> */}
-          </TouchableOpacity>
-          <Image
-            style={styles.userProfileImage}
-            source={{ uri: chatUser.profile_image }}
-          />
-          <View
-            style={{
-              paddingLeft: 10,
-              justifyContent: 'center',
-            }}
-          >
-            <Text style={{ color: '#fff', fontWeight: '700', fontSize: 18 }}>
-              {chatUser.name}
-            </Text>
-            <Text style={{ color: '#fff', fontWeight: '300' }}>
-              {chatUser.last_seen}
-            </Text>
-          </View>
-        </View>
-      ),
-      headerRight: () => (
-        <TouchableOpacity
-          style={{ paddingRight: 10 }}
-          onPress={() => {
-            Alert.alert('Audio Call', 'Audio Call Button Pressed');
-          }}
-        >
-          <Ionicons size={18} name="call" color="black" style={styles.iconStyle} />
-        </TouchableOpacity>
-      ),
-    });
-  }, []);
-
-  return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={styles.container}>
-        <FlatList
-          style={{ backgroundColor: '#f2f2ff' }}
-          inverted={true}
-          data={JSON.parse(JSON.stringify(messages)).reverse()}
-          renderItem={({ item }) => (
-            <TouchableWithoutFeedback>
-              <View style={{ marginTop: 6 }}>
-                <View
-                  style={{
-                    maxWidth: Dimensions.get('screen').width * 0.8,
-                    backgroundColor: '#3a6ee8',
-                    alignSelf:
-                      item.sender === currentUser.name
-                        ? 'flex-end'
-                        : 'flex-start',
-                    marginHorizontal: 10,
-                    padding: 10,
-                    borderRadius: 8,
-                    borderBottomLeftRadius:
-                      item.sender === currentUser.name ? 8 : 0,
-                    borderBottomRightRadius:
-                      item.sender === currentUser.name ? 0 : 8,
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: '#fff',
-                      fontSize: 16,
-                    }}
-                  >
-                    {item.message}
-                  </Text>
-                  <Text
-                    style={{
-                      color: '#dfe4ea',
-                      fontSize: 14,
-                      alignSelf: 'flex-end',
-                    }}
-                  >
-                    {item.time}
-                  </Text>
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
-          )}
-        />
-
-        <View style={{ paddingVertical: 10 }}>
-          <View style={styles.messageInputView}>
-            <TextInput
-              defaultValue={inputMessage}
-              style={styles.messageInput}
-              placeholder='Message'
-              onChangeText={(text) => setInputMessage(text)}
-              onSubmitEditing={() => {
-                sendMessage();
-              }}
-            />
-            <TouchableOpacity
-              style={styles.messageSendView}
-              onPress={() => {
-                sendMessage();
-              }}
-            >
-              <Ionicons size={18} name="send" color="black" style={styles.iconStyle} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </TouchableWithoutFeedback>
-  );
+                                </View>
+                            </View>
+                        </View>
+                    )}
+                />
+            </View>
+         </SafeAreaView>
+    );
 }
 
 const styles = StyleSheet.create({
-  headerLeft: {
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  userProfileImage: { height: '100%', aspectRatio: 1, borderRadius: 100 },
-  container: {
-    flex: 1,
-    backgroundColor: '#f2f2ff',
-  },
-  messageInputView: {
-    display: 'flex',
-    flexDirection: 'row',
-    marginHorizontal: 14,
-    backgroundColor: '#fff',
-    borderRadius: 4,
-  },
-  messageInput: {
-    height: 40,
-    flex: 1,
-    paddingHorizontal: 10,
-  },
-  messageSendView: {
-    paddingHorizontal: 10,
-    justifyContent: 'center',
-  },
-});
+    container:{
+        flex:1,
+        backgroundColor:'#fff'
+    },
+    mainView: {
+        flexDirection: 'row',
+        alignSelf: 'center',
+        marginTop: 10
+    },
+    mainRow: {
+        width: '90%',
+        height: 100,
+        backgroundColor: '#F3F3F3',
+        borderRadius: 10,
+        shadowColor: 'blue',
+        elevation: 4,
+        shadowRadius: 10,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    btn: {
+        flexDirection: 'row'
+    },
+    addresh:{
+        marginTop:5
+    },
+    rightView:{
+        justifyContent:'center',
+    },
+    searchWrapperStyle: {
+        backgroundColor: "#4584FF",
+        flexDirection: "row",
+        borderRadius:30,
+        width:'95%',
+        alignSelf:'center'
+    },
+    iconStyle: {
+        marginTop: 15,
+        marginHorizontal: 8,
+    },
+})
+
+export default FavoriteScreen;

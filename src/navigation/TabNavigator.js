@@ -24,7 +24,7 @@ const TabNavigator = () => {
         tabBarActiveTintColor: 'yellow',
       }}>
       <Tab.Screen
-        name="Home1"
+        name="Home"
         component={HomeScreen}
         options={({route}) => ({
           tabBarStyle: {
@@ -49,7 +49,7 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Scheme"
+        name="TopSheme"
         component={TopSheme}
         options={{
           // tabBarBadge: 3,

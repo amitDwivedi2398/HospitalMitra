@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, SafeAreaView, ScrollView, TextInput, FlatList, Image, TouchableOpacity, Alert, ImageBackground } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -6,6 +6,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Rating } from 'react-native-ratings';
 import BackHeader from '../components/BackHeader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 
 
@@ -18,6 +20,37 @@ const Booking = ({ navigation }) => {
     { src: require('../assets/images/FarCry6.png'), title: 'Farcry', key: '4' },
     { src: require('../assets/images/departmentHospital.png'), title: 'Detal', key: '5' },
   ]);
+  
+  const [blogs, setBlogs] = useState([]);
+  const [storeddata, setStoreddata] = useState('');
+  const getData = async () => {
+    try {
+        const user_id = await AsyncStorage.getItem('user_id');
+        if (user_id !== null) {
+            console.log('@@@@@@@@', user_id);
+            setStoreddata(user_id);
+        }
+    } catch (e) {
+        console.log('no Value in login');
+    }
+};
+  const getBlogs = async () => {
+    axios
+      .get(
+        `http://hospitalmitra.in/newadmin/api/ApiCommonController/blogboard/${storeddata}`,
+      )
+      .then(response => {
+        console.log("Blogs list <<<<<",response.data.data);
+        setBlogs(response.data.data)
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    getData()
+   getBlogs()
+  }, [storeddata])
 
   return (
     <SafeAreaView style={styles.container} >
@@ -63,23 +96,28 @@ const Booking = ({ navigation }) => {
             )}
           />
         </View>
+        {blogs?.map((item)=>(
+        <View>
         <Text style={styles.title} >Recommended For You</Text>
         <View style={styles.swiming}>
-          <Image style={styles.poolimg} source={require('../assets/images/pool.jpg')} />
-          <Text style={styles.swimingTxt} >Swimming for fitness: How safe is it to swim during monsoon, what are the infection risks and how to avoid them? </Text>
-          <Text style={styles.txt}>With the arrival of monsoon the risk of infections of all sorts increase. Water logging, accumulation of rain water on roads and hollow spaces for longer duration, seepage of rainwater and other polluted water to drinking water sources, and flow of unhealthy water to water bodies like swimming pools poses greater risk for various types of diseases and infections.</Text>
+          <Image style={styles.poolimg} source={{uri: `${item.image}`}} />
+          <Text style={styles.swimingTxt} >{item.title}</Text>
+          <Text style={styles.txt}>{item.description}</Text>
         </View>
         <View style={[styles.secondSection]}>
           <Image style={{
             width: 100,
             height: 150,
             borderRadius:15
-             }} source={require('../assets/images/FarCry6.png')} />
+             }} source={{uri: `${item.image}`}} />
              <View style={ styles.leftSection}>
-             <Text style={styles.swimingTxt}>Anaerobic exercise: What it is and how it affects the body</Text>
-             <Text style={styles.txt}>You’ve most likely heard of anaerobic exercise before, but how much do you know about the science behind this vital aspect of your physical fitness? Enhancing your comprehension of the anaerobic energy system is a sure-fire way to empower yourself and give your workouts a boost.</Text>
+             <Text style={styles.swimingTxt}>{item.title}</Text>
+             <Text style={styles.txt}>{item.description}</Text>
              </View>
         </View>
+        
+        </View>
+        ))}
       </ScrollView>
     </SafeAreaView>
   );
@@ -122,21 +160,24 @@ const styles = StyleSheet.create({
   },
   poolimg: {
     width: '95%',
-    height: 100,
+    height: 130,
     alignSelf: 'center',
-    borderRadius: 20
+    borderRadius: 20,
+    resizeMode: 'stretch'
   },
   swiming: {
-    height: 'auto', width: '95%', justifyContent: 'center',
-    alignItems: 'center', backgroundColor: '#fff', padding: 10,
-    alignSelf: 'center', borderRadius: 10, shadowColor: 'blue',
+    height: 'auto', width: '95%',
+     backgroundColor: '#fff',
+      padding: 10,
+    borderRadius: 10, 
+    shadowColor: 'blue',
     elevation: 7,
     shadowRadius: 10,
+    alignSelf:'center'
   },
   swimingTxt: {
     color: '#4584FF',
     fontFamily: 'Roboto-Medium'
-
   },
   txt: {
     color: 'black',
