@@ -7,6 +7,7 @@ import CustomDrawer from '../components/CustomDrawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import ProfileScreen from '../screens/ProfileScreen';
 
@@ -38,6 +39,8 @@ import OtpScreen from '../screens/OtpScreen';
 import TopSheme from '../screens/TopSheme';
 import NoticeScreen from '../screens/NoticeScreen';
 import FavoriteScreen from '../screens/DrawerPages/FavoriteScreen';
+import ChangeLng from '../screens/DrawerPages/ChangeLng';
+
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -193,6 +196,15 @@ const AuthStack = () => {
         options={{
           drawerIcon: ({ color }) => (
             <MaterialIcons name="favorite-outline" size={22} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Language"
+        component={ChangeLng}
+        options={{
+          drawerIcon: ({ color }) => (
+            <FontAwesome name="language" size={22} color={color} />
           ),
         }}
       />
