@@ -83,6 +83,7 @@ export default function FavoriteScreen({ navigation }) {
 
   const [inputMessage, setInputMessage] = useState('');
   const [received, setReceived] = useState([]);
+  const [userProfile, setuserProfile] = useState([]);
 
   function getTime(date) {
     var hours = date.getHours();
@@ -110,41 +111,56 @@ export default function FavoriteScreen({ navigation }) {
     ]);
     setInputMessage('');
   }
+
   const getData = async () => {
     try {
-        const user_id = await AsyncStorage.getItem('user_id');
-        if (user_id !== null) {
-            console.log('@@@@@@@@', user_id);
-            setStoreddata(user_id);
-        }
+      const user_id = await AsyncStorage.getItem('user_id');
+      if (user_id !== null) {
+        console.log('@@@@@@@@', user_id);
+        setStoreddata(user_id);
+      }
     } catch (e) {
-        console.log('no Value in login');
+      console.log('no Value in login');
     }
-};
-const getRecevied = async () => {
+  };
+  const getProfile = async () => {
     axios
-        .get(
-            `http://hospitalmitra.in/newadmin/api/ApiCommonController/chatgetbyuserid/${storeddata}`,
-        )
-        .then(response => {
-            console.log("recevied data list <<<<<", response.data.data);
-            const list = response.data.data
-            setReceived(list)
-        })
-        .catch(error => {
-            console.log(error);
-        });
-};
-useEffect (() => {
+      .get(`http://hospitalmitra.in/newadmin/api/ApiCommonController/usersingledata/${storeddata}`)
+      .then((response) => {
+        // console.log("Profile ??", response.data.data);
+        const userProfile = response.data.data
+        setuserProfile(userProfile[0].image)
+        console.log(userProfile[0].image);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const getRecevied = async () => {
+    axios
+      .get(
+        `http://hospitalmitra.in/newadmin/api/ApiCommonController/chatgetbyuserid/${storeddata}`,
+      )
+      .then(response => {
+        console.log("recevied data list <<<<<", response.data.data);
+        const list = response.data.data
+        setReceived(list)
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    getProfile();
     getRecevied();
     getData();
-}, [storeddata]);
-  const send = async (id)=>{
+  }, [storeddata]);
+  const send = async (id) => {
     axios.post(`http://hospitalmitra.in/newadmin/api/ApiCommonController/chat`,
-    {
-      message:inputMessage
-    },
-    {
+      {
+        message: inputMessage
+      },
+      {
         headers: {
           user_id: await AsyncStorage.getItem('user_id'),
         },
@@ -168,25 +184,25 @@ useEffect (() => {
       })
       .catch(error => {
         console.log(error);
-      })    
-}
+      })
+  }
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
-      <View style={styles.headerLeft}>
+        <View style={styles.headerLeft}>
           <TouchableOpacity
             style={{ paddingRight: 10 }}
             onPress={() => {
               navigation.openDrawer();
             }}
           >
-          <AntDesign name="bars" color={'#4584FF'} size={30} />
+            <AntDesign name="bars" color={'#4584FF'} size={30} />
           </TouchableOpacity>
-          <Image
+          {/* <Image
             style={styles.userProfileImage}
-            source={{ uri: chatUser.profile_image }}
-          />
+            source={{ uri: userProfile[0].image }}
+          /> */}
           <View
             style={{
               paddingLeft: 10,
@@ -194,11 +210,11 @@ useEffect (() => {
             }}
           >
             <Text style={{ color: '#4584FF', fontWeight: '700', fontSize: 18 }}>
-              {chatUser.name}
+              {/* {userProfile[0].username} */}
             </Text>
-            <Text style={{ color: '#4584FF', fontWeight: '300' }}>
+            {/* <Text style={{ color: '#4584FF', fontWeight: '300' }}>
               {chatUser.last_seen}
-            </Text>
+            </Text> */}
           </View>
         </View>
         <FlatList
@@ -206,47 +222,47 @@ useEffect (() => {
           inverted={true}
           data={JSON.parse(JSON.stringify(received)).reverse()}
           renderItem={({ item }) => (
-           <View>
-             <TouchableWithoutFeedback>
-              <View style={{ marginTop: 6 }}>
-                <View
-                  style={{
-                    maxWidth: Dimensions.get('screen').width * 0.8,
-                    backgroundColor: '#3a6ee8',
-                    alignSelf:
-                      item.sender === currentUser.name
-                        ? 'flex-end'
-                        : 'flex-start',
-                    marginHorizontal: 10,
-                    padding: 10,
-                    borderRadius: 8,
-                    borderBottomLeftRadius:
-                      item.sender === currentUser.name ? 8 : 0,
-                    borderBottomRightRadius:
-                      item.sender === currentUser.name ? 0 : 8,
-                  }}
-                >
-                  <Text
+            <View>
+              <TouchableWithoutFeedback>
+                <View style={{ marginTop: 6 }}>
+                  <View
                     style={{
-                      color: '#fff',
-                      fontSize: 16,
+                      maxWidth: Dimensions.get('screen').width * 0.8,
+                      backgroundColor: '#3a6ee8',
+                      alignSelf:
+                        item.sender === currentUser.name
+                          ? 'flex-end'
+                          : 'flex-start',
+                      marginHorizontal: 10,
+                      padding: 10,
+                      borderRadius: 8,
+                      borderBottomLeftRadius:
+                        item.sender === currentUser.name ? 8 : 0,
+                      borderBottomRightRadius:
+                        item.sender === currentUser.name ? 0 : 8,
                     }}
                   >
-                    {item.message}
-                  </Text>
-                  <Text
-                    style={{
-                      color: '#dfe4ea',
-                      fontSize: 14,
-                      alignSelf: 'flex-end',
-                    }}
-                  >
-                    {item.time}
-                  </Text>
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontSize: 16,
+                      }}
+                    >
+                      {item.message}
+                    </Text>
+                    <Text
+                      style={{
+                        color: '#dfe4ea',
+                        fontSize: 14,
+                        alignSelf: 'flex-end',
+                      }}
+                    >
+                      {item.time}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            </TouchableWithoutFeedback>
-           </View>
+              </TouchableWithoutFeedback>
+            </View>
           )}
         />
 
@@ -254,6 +270,8 @@ useEffect (() => {
           <View style={styles.messageInputView}>
             <TextInput
               defaultValue={inputMessage}
+              color={'#333'}
+              placeholderTextColor={'#333'}
               style={styles.messageInput}
               placeholder='Message'
               onChangeText={(text) => setInputMessage(text)}
@@ -280,7 +298,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor:'#fff'
+    backgroundColor: '#fff'
   },
   userProfileImage: { height: 50, aspectRatio: 1, borderRadius: 100 },
   container: {

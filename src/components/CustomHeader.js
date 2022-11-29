@@ -104,11 +104,12 @@ const CustomHeader = ({ IconName, TitleName, props }) => {
                                     selectedTextStyle={styles.selectedTextStyle}
                                     inputSearchStyle={styles.inputSearchStyle}
                                     iconStyle={styles.iconStyle}
+                                    itemTextStyle={styles.txt}
                                     data={cityList}
                                     search
                                     maxHeight={300}
-                                    labelField="city_name"
-                                    valueField="city_name"
+                                    labelField="cityname"
+                                    valueField="cityname"
                                     placeholder={!isFocus ? city : '...'}
                                     searchPlaceholder="Search..."
                                     value={value}
@@ -121,7 +122,7 @@ const CustomHeader = ({ IconName, TitleName, props }) => {
                                                     `http://hospitalmitra.in/newadmin/api/ApiCommonController/cityupdatelist`,
                                                     {
                                                         id: storeddata,
-                                                        city: item.city_name,
+                                                        city: item.cityname,
                                                         city_id: item.id
                                                     },
                                                 )
@@ -183,7 +184,11 @@ const styles = StyleSheet.create({
     inputSearchStyle: {
         height: 40,
         fontSize: 16,
+        color:'#333'
     },
+    txt:{
+        color:'#333'
+    }
 })
 
 export default CustomHeader;

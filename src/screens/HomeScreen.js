@@ -188,7 +188,7 @@ useEffect(() => {
                     
               </ImageBackground>
               </TouchableOpacity>
-              <Text style={styles.textTilte} >{item.title}</Text>
+              <Text style={styles.textTilte} >{item.depart_name}</Text>
             </View>
             ))}
           </ScrollView>
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   textTilte:{
-    color:'black',fontFamily:'Roboto-Regular',fontSize:15,marginLeft:10,fontWeight:'700'
+    color:'black',fontFamily:'Roboto-Regular',fontSize:15,marginLeft:10,fontWeight:'700',height:20,
   }
 })
 

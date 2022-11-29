@@ -20,10 +20,11 @@ import Animated from 'react-native-reanimated';
 import ImagePicker from 'react-native-image-crop-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { Picker } from '@react-native-picker/picker';
 
 
 
-const ProfileScreen = ({navigation}) => {
+const ProfileScreen = ({ navigation }) => {
   const [date, setDate] = useState('');
   const [open, setOpen] = useState(false);
   const [dobLabel, setDobLabel] = useState('Date of Birth');
@@ -39,6 +40,8 @@ const ProfileScreen = ({navigation}) => {
   const [userId, setUserId] = useState();
   const [userName, setUserName] = useState();
   const [userImage, setUserImage] = useState();
+  const [cityList, setCityList] = useState([]);
+  const [genderList] = useState(['Male', 'Female'])
 
   const takePhotoFromCamera = () => {
     ImagePicker.openCamera({
@@ -65,38 +68,58 @@ const ProfileScreen = ({navigation}) => {
       bs.current.snapTo(1);
     });
   }
-  const sendData =() =>{
+
+
+  const getCity = async () => {
+    axios
+      .get(
+        `http://hospitalmitra.in/newadmin/api/ApiCommonController/getcitylist`,
+      )
+      .then(response => {
+        console.log(" city name list <<<<<??", response.data.data);
+        const cityList = response.data.data;
+        setCityList(cityList)
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    getCity();
+  }, []);
+
+  const sendData = () => {
     editData()
   }
-  const editData =async () => {
-    console.log(username, mobile_no,city, date,  gender,height,weight,blood,img);
-     const img = {uri:`${image}`,name:'profile.jpg',type:'image/jpeg'}
+  const editData = async () => {
+    console.log(username, mobile_no, city, date, gender, height, weight, blood, img);
+    const img = { uri: `${image}`, name: 'profile.jpg', type: 'image/jpeg' }
     const formData = new FormData()
-    formData.append('username',username)
-    formData.append('mobile_no',mobile_no)
-    formData.append('dob',date)
-    formData.append('city',city)
-    formData.append('gender',gender)
-    formData.append('height',height)
-    formData.append('weight',weight)
-    formData.append('blood_group',blood)
+    formData.append('username', username)
+    formData.append('mobile_no', mobile_no)
+    formData.append('dob', date)
+    formData.append('city_id', city)
+    formData.append('gender', gender)
+    formData.append('height', height)
+    formData.append('weight', weight)
+    formData.append('blood_group', blood)
     formData.append('image', img)
-    fetch(`http://hospitalmitra.in/newadmin/api/ApiCommonController/profileuser`, 
-    {
-      method: 'POST',
-      headers: {
-        "Content-Type": 'multipart/form-data',
-        'id': await AsyncStorage.getItem('user_id'),
-      },
-      body: formData
-    }).then(response => {
-      response.json().then(res => {
-        console.log(res);
+    fetch(`http://hospitalmitra.in/newadmin/api/ApiCommonController/profileuser`,
+      {
+        method: 'POST',
+        headers: {
+          "Content-Type": 'multipart/form-data',
+          'id': await AsyncStorage.getItem('user_id'),
+        },
+        body: formData
+      }).then(response => {
+        response.json().then(res => {
+          console.log(res);
+        });
+      })
+      .catch(error => {
+        console.log(error);
       });
-    })
-    .catch(error => {
-      console.log(error);
-    });
   }
   const getDataProfile = async () => {
     try {
@@ -142,9 +165,9 @@ const ProfileScreen = ({navigation}) => {
     getProfile();
     getDataProfile();
   }, [storeProfile]);
- const renderInner = () => (
+  const renderInner = () => (
     <View style={styles.panel}>
-      <View style={{alignItems: 'center'}}>
+      <View style={{ alignItems: 'center' }}>
         <Text style={styles.panelTitle}>Upload Photo</Text>
         <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
       </View>
@@ -172,11 +195,11 @@ const ProfileScreen = ({navigation}) => {
 
   const bs = React.useRef(null);
   const fall = new Animated.Value(1);
- 
- 
+
+
   return (
     <SafeAreaView style={styles.container} >
-      <BackHeader label={'Edit Profile'} onPress={()=> navigation.openDrawer()} />
+      <BackHeader label={'Edit Profile'} onPress={() => navigation.openDrawer()} />
       <BottomSheet
         ref={bs}
         snapPoints={[330, 0]}
@@ -187,113 +210,142 @@ const ProfileScreen = ({navigation}) => {
         enabledGestureInteraction={true}
       />
       <ScrollView>
-      <Animated.View style={{
-        opacity: Animated.add(0.1, Animated.multiply(fall, 1.0)),
-    }}>
-      <View style={styles.header} >
-        <TouchableOpacity style={styles.profileBtn} onPress={() => bs.current.snapTo(0)} >
-        <View
-              style={{
-                height: 100,
-                width: 100,
-                borderRadius: 15,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              {userImage?(<ImageBackground
-                source={{
-                  uri: userImage,
-                }}
-                style={{height: 100, width: 100}}
-                imageStyle={{borderRadius: 50}}>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Icon
-                    name="camera"
-                    size={35}
-                    color="#fff"
+        <Animated.View style={{
+          opacity: Animated.add(0.1, Animated.multiply(fall, 1.0)),
+        }}>
+          <View style={styles.header} >
+            <TouchableOpacity style={styles.profileBtn} onPress={() => bs.current.snapTo(0)} >
+              <View
+                style={{
+                  height: 100,
+                  width: 100,
+                  borderRadius: 15,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                {userImage ? (<ImageBackground
+                  source={{
+                    uri: userImage,
+                  }}
+                  style={{ height: 100, width: 100 }}
+                  imageStyle={{ borderRadius: 50 }}>
+                  <View
                     style={{
-                      opacity: 0.7,
-                      alignItems: 'center',
+                      flex: 1,
                       justifyContent: 'center',
-                      borderWidth: 1,
-                      borderColor: '#fff',
-                      borderRadius: 10,
+                      alignItems: 'center',
+                    }}>
+                    <Icon
+                      name="camera"
+                      size={35}
+                      color="#fff"
+                      style={{
+                        opacity: 0.7,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderWidth: 1,
+                        borderColor: '#fff',
+                        borderRadius: 10,
+                      }}
+                    />
+                  </View>
+                </ImageBackground>) :
+                  (<ImageBackground
+                    source={{
+                      uri: image,
                     }}
-                  />
-                </View>
-              </ImageBackground>):
-              (<ImageBackground
-                source={{
-                  uri: image,
+                    style={{ height: 100, width: 100 }}
+                    imageStyle={{ borderRadius: 50 }}>
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Icon
+                        name="camera"
+                        size={35}
+                        color="#fff"
+                        style={{
+                          opacity: 0.7,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderWidth: 1,
+                          borderColor: '#fff',
+                          borderRadius: 10,
+                        }}
+                      />
+                    </View>
+                  </ImageBackground>)}
+
+              </View>
+              <MaterialIcons
+                name="edit"
+                size={20}
+                color="#666"
+                style={{ marginTop: 30 }}
+              />
+            </TouchableOpacity>
+          </View>
+          <ScrollView showsVerticalScrollIndicator={false}
+            style={{ paddingHorizontal: 25, marginTop: 50 }}>
+            <InputField
+              label={'Full Name'}
+              color={'#333'}
+              pcolor={'#333'}
+              value={username}
+              onChangeText={setUsername}
+              icon={
+                <Ionicons
+                  name="person-outline"
+                  size={20}
+                  color="#666"
+                  style={{ marginRight: 5 }}
+                />
+              }
+            />
+            <InputField
+              label={'Enter your Phone No. '}
+              value={mobile_no}
+              color={'#333'}
+              pcolor={'#333'}
+              onChangeText={setMobile_no}
+              icon={
+                <Ionicons
+                  name="phone-portrait-outline"
+                  size={20}
+                  color="#666"
+                  style={{ marginRight: 5 }}
+                />
+              }
+              inputType="text"
+            />
+            <View style={{
+              flexDirection: 'row', alignItems: 'center', borderBottomColor: '#ccc',
+              borderBottomWidth: 1, marginBottom: 30
+            }} >
+              <MaterialIcons
+                name="location-city"
+                size={20}
+                color="#666"
+                style={{ marginRight: 5 }}
+              />
+              <Picker
+                style={{ width: '80%', }}
+                selectedValue={city}
+                onValueChange={(itemVal) => {
+                  setCity(itemVal);
                 }}
-                style={{height: 100, width: 100}}
-                imageStyle={{borderRadius: 50}}>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Icon
-                    name="camera"
-                    size={35}
-                    color="#fff"
-                    style={{
-                      opacity: 0.7,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderWidth: 1,
-                      borderColor: '#fff',
-                      borderRadius: 10,
-                    }}
-                  />
-                </View>
-              </ImageBackground>)}
-              
+              >
+                {
+                  cityList.map((l) => (
+                    <Picker.Item label={l.cityname} value={l.id} style={{ color: '#222' }} />
+                  ))
+                }
+
+              </Picker>
             </View>
-          <MaterialIcons
-              name="edit"
-              size={20}
-              color="#666"
-              style={{ marginTop:30}}
-            />
-        </TouchableOpacity>
-      </View>
-      <ScrollView showsVerticalScrollIndicator={false}
-        style={{ paddingHorizontal: 25,marginTop:50 }}>
-        <InputField
-          label={'Full Name'}
-          value={username}
-          onChangeText={setUsername}
-          icon={
-            <Ionicons
-              name="person-outline"
-              size={20}
-              color="#666"
-              style={{ marginRight: 5 }}
-            />
-          }
-        />
-        <InputField
-          label={'Enter your Phone No. '}
-          value={mobile_no}
-          onChangeText={setMobile_no}
-          icon={
-            <Ionicons
-              name="phone-portrait-outline"
-              size={20}
-              color="#666"
-              style={{ marginRight: 5 }}
-            />
-          }
-          inputType="text"
-        />
-        <InputField
+            {/* <InputField
           label={'Enter your city '}
           value={city}
           onChangeText={setCity}
@@ -306,22 +358,24 @@ const ProfileScreen = ({navigation}) => {
             />
           }
           inputType="text"
-        />
-        <InputField
-          label={'Date of Birth'}
-          value={date}
-          onChangeText={setDate}
-          icon={
-            <Ionicons
-            name="calendar-outline"
-            size={20}
-            color="#666"
-            style={{marginRight: 5}}
-          />
-          }
-          inputType="text"
-        />
-         {/* <View
+        /> */}
+            <InputField
+              label={'Date of Birth'}
+              value={date}
+              color={'#333'}
+              pcolor={'#333'}
+              onChangeText={setDate}
+              icon={
+                <Ionicons
+                  name="calendar-outline"
+                  size={20}
+                  color="#666"
+                  style={{ marginRight: 5 }}
+                />
+              }
+              inputType="text"
+            />
+            {/* <View
           style={{
             flexDirection: 'row',
             borderBottomColor: '#ccc',
@@ -358,62 +412,93 @@ const ProfileScreen = ({navigation}) => {
             setOpen(false);
           }}
         /> */}
-        <InputField
-          label={'Gender'}
-          value={gender}
-          onChangeText={setGender}
-          icon={
-            <Ionicons
-              name="md-transgender-outline"
-              size={20}
-              color="#666"
-              style={{ marginRight: 5 }}
-            />
-          }
-        />
-        <InputField
-          label={'Enter Height'}
-          value={height}
-          onChangeText={setHeight}
-          icon={
-            <MaterialCommunityIcons
-              name="human-male-height"
-              size={20}
-              color="#666"
-              style={{ marginRight: 5 }}
-            />
-          }
-        />
-        <InputField
-          label={'Weight'}
-          value={weight}
-          onChangeText={setWeight}
-          icon={
-            <FontAwesome5
-              name="weight"
-              size={20}
-              color="#666"
-              style={{ marginRight: 5 }}
-            />
-          }
-        />
-        <InputField
-          label={'Blood Group'}
-          value={blood}
-          onChangeText={setBlood}
-          icon={
-            <Fontisto
-              name="blood-drop"
-              size={20}
-              color="red"
-              style={{ marginRight: 5 }}
-            />
-          }
-        />
+            <View style={{
+              flexDirection: 'row', alignItems: 'center', borderBottomColor: '#ccc',
+              borderBottomWidth: 1, marginBottom: 30
+            }} >
+              <Ionicons
+                name="md-transgender-outline"
+                size={20}
+                color="#666"
+                style={{ marginRight: 5 }}
+              />
+              <Picker
+                style={{ width: '80%',color:'#333' }}
+                selectedValue={gender}
+                onValueChange={(itemVal) => {
+                  setGender(itemVal);
+                }}
+              >
+                {
+                  genderList.map((l) => (
+                    <Picker.Item label={l} value={l} style={{ color: '#222' }} />
+                  ))
+                }
 
-        <CustomButton label={'SUBMIT'} onPress={sendData} />
+              </Picker>
+            </View>
+            {/* <InputField
+              label={'Gender'}
+              value={gender}
+              onChangeText={setGender}
+              icon={
+                <Ionicons
+                  name="md-transgender-outline"
+                  size={20}
+                  color="#666"
+                  style={{ marginRight: 5 }}
+                />
+              }
+            /> */}
+            <InputField
+              label={'Enter Height'}
+              value={height}
+              color={'#333'}
+              pcolor={'#333'}
+              onChangeText={setHeight}
+              icon={
+                <MaterialCommunityIcons
+                  name="human-male-height"
+                  size={20}
+                  color="#666"
+                  style={{ marginRight: 5 }}
+                />
+              }
+            />
+            <InputField
+              label={'Weight'}
+              color={'#333'}
+          pcolor={'#333'}
+              value={weight}
+              onChangeText={setWeight}
+              icon={
+                <FontAwesome5
+                  name="weight"
+                  size={20}
+                  color="#666"
+                  style={{ marginRight: 5 }}
+                />
+              }
+            />
+            <InputField
+              label={'Blood Group'}
+              value={blood}
+              color={'#333'}
+              pcolor={'#333'}
+              onChangeText={setBlood}
+              icon={
+                <Fontisto
+                  name="blood-drop"
+                  size={20}
+                  color="red"
+                  style={{ marginRight: 5 }}
+                />
+              }
+            />
 
-        {/* <View
+            <CustomButton label={'SUBMIT'} onPress={sendData} />
+
+            {/* <View
           style={{
             flexDirection: 'row',
             justifyContent: 'center',
@@ -424,9 +509,9 @@ const ProfileScreen = ({navigation}) => {
             <Text style={{color: '#AD40AF', fontWeight: '700'}}> Login</Text>
           </TouchableOpacity>
         </View> */}
-        </ScrollView>
+          </ScrollView>
         </Animated.View>
-        </ScrollView>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -462,7 +547,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     alignSelf: 'center',
     marginBottom: 30,
-    flexDirection:'row'
+    flexDirection: 'row'
   },
   panel: {
     padding: 20,
@@ -478,7 +563,7 @@ const styles = StyleSheet.create({
   headers: {
     backgroundColor: '#FFFFFF',
     shadowColor: '#333333',
-    shadowOffset: {width: -1, height: -3},
+    shadowOffset: { width: -1, height: -3 },
     shadowRadius: 2,
     shadowOpacity: 0.4,
     // elevation: 5,

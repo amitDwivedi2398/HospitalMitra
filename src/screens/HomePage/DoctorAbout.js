@@ -29,29 +29,44 @@ const DoctorAbout = ({ navigation,route }) => {
     }, []);
     return (
         <SafeAreaView style={styles.container} >
-            <BackHeader TitleName={'name'} onPress={() => navigation.navigate('OtpSchame')} />
+            <BackHeader TitleName={'name'} onPress={() => navigation.goBack()} />
             <View style={styles.mainContainer} >
                 <Image style={styles.img} source={{ uri: `${doctor.image}` }} />
                 <Text style={styles.docName} >{doctor.doctor_name}</Text>
-                <Text style={styles.subTitle} >{doctor.designation}
+                <Text style={styles.subTitle} >{doctor.speciality}
                 </Text>
                 <View style={styles.row} >
-                    <Text style={styles.rowtxt} >Patients</Text>
+                <View style={{alignItems:'center'}}>
+                <Text style={styles.rowtxt} >Patients</Text>
+                <Text style={[styles.txt,,{marginTop:5}]} >{doctor.patients}</Text>
+                </View>
+                    <View style={{alignItems:'center'}} >
                     <Text style={styles.rowtxt}>Experience</Text>
+                    <Text style={[styles.txt]}>{doctor.experiance}</Text>
+                    </View>
+                    <View style={{alignItems:'center'}} >
                     <Text style={styles.rowtxt}>Fees</Text>
+                    <Text style={[styles.txt,{marginTop:5}]}>{doctor.fees}</Text>
+                    </View>
+                    
                 </View>
                 <View style={styles.rowTwo}>
-                <Text style={[styles.txt,]} >{doctor.patients}</Text>
-                    <Text style={styles.txt}>{doctor.experiance}</Text>
-                    <Text style={[styles.txt,{marginRight:3}]}>{doctor.fees}</Text>
+                <View style={{marginTop:5}} >
+                    <Text style={styles.rowtxt}>Day</Text>
+                    <Text style={[styles.txt,{marginTop:0}]}>{doctor.days_checkbox}</Text>
+                    </View>
+                    <View style={{marginTop:5}}>
+                    <Text style={styles.rowtxt}>Time</Text>
+                    <Text style={[styles.txt,{marginTop:0}]}>{doctor.time}</Text>
+                    </View>
                 </View>
                 <View>
                     <Text style={styles.about} >About Doctor</Text>
-                    <Text style={{color:'#6A6A6A'}} >{doctor.about_doctor}</Text>
+                    <Text style={{color:'#6A6A6A', marginLeft:10}} >{doctor.about_doctor}</Text>
                 </View>
                 <View>
-                    <Text style={styles.about} >OPD Schedule</Text>
-                    <Text style={{color:'#6A6A6A'}} >{doctor.opd_schedule}</Text>
+                    <Text style={styles.about} >Description</Text>
+                    <Text style={{color:'#6A6A6A',marginLeft:10}} >{doctor.description}</Text>
                 </View>
             </View>
 
@@ -68,7 +83,6 @@ const styles = StyleSheet.create({
     },
     mainContainer: {
         flex: 1,
-        alignSelf: 'center'
     },
     img: {
         width: 100,
@@ -94,12 +108,13 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'space-between',
         marginTop:50,
+        width:'95%',
+        alignSelf:'center'
     },
     rowtxt:{
         color:'#6A6A6A',
         fontFamily: 'Roboto-Medium',
         fontSize:17,
-
     },
     txt:{
         color:'#4584FF',
@@ -107,16 +122,15 @@ const styles = StyleSheet.create({
         fontSize:17,
     },
     rowTwo:{
-        flexDirection:'row',
-        justifyContent:'space-between',
         marginTop:5,
-        marginLeft:10,
+        marginLeft:10
     },
     about:{
         color:'#4584FF',
         marginTop:20,
         fontFamily: 'Roboto-Bold',
         fontSize:18,
+        marginLeft:10
     }
 })
 

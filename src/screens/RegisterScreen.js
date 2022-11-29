@@ -183,6 +183,8 @@ const RegisterScreen = ({ navigation }) => {
 
         <InputField
           value={fullName}
+          color={'#333'}
+          pcolor={'#333'}
           onChangeText={setfullName}
           label={'Full Name'}
           icon={
@@ -197,6 +199,8 @@ const RegisterScreen = ({ navigation }) => {
 
         <InputField
           value={number}
+          color={'#333'}
+          pcolor={'#333'}
           onChangeText={setNumber}
           label={'Enter your Phone No. '}
           icon={
@@ -208,16 +212,18 @@ const RegisterScreen = ({ navigation }) => {
             />
           }
         />
-       <View style={{flexDirection:'row',alignItems:'center',borderBottomColor: '#ccc',
-        borderBottomWidth: 1,marginBottom:30}} >
-       <EvilIcons
-              name="location"
-              size={20}
-              color="#666"
-              style={{}}
-            />
-        <Picker
-        style={{width:'80%',}}
+        <View style={{
+          flexDirection: 'row', alignItems: 'center', borderBottomColor: '#ccc',
+          borderBottomWidth: 1, marginBottom: 30
+        }} >
+          <EvilIcons
+            name="location"
+            size={20}
+            color="#666"
+            style={{}}
+          />
+          <Picker
+            style={{ width: '80%', }}
             selectedValue={city}
             onValueChange={(itemVal) => {
               setCity(itemVal);
@@ -225,7 +231,7 @@ const RegisterScreen = ({ navigation }) => {
           >
             {
               cityList.map((l) => (
-                <Picker.Item label={l.city_name} value={l.city_name} style={{ color: '#222' }} />
+                <Picker.Item label={l.cityname} value={l.cityname} style={{ color: '#222' }} />
               ))
             }
 
@@ -257,8 +263,8 @@ const RegisterScreen = ({ navigation }) => {
           open={open}
           date={date}
           mode={'date'}
-          maximumDate={new Date('2005-01-01')}
-          minimumDate={new Date('1980-01-01')}
+          maximumDate={new Date('2023-01-01')}
+          minimumDate={new Date('1950-01-01')}
           onConfirm={date => {
             setOpen(false);
             setDate(date);

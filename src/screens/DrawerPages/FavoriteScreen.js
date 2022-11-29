@@ -120,10 +120,10 @@ const FavoriteScreen = ({navigation}) => {
                                             }}
                                         />
                                         <View style={{alignSelf:'center'}} >
-                                            <Text style={{width:200}} >{item.name}</Text>
+                                            <Text style={{width:200,color:'#333'}} >{item.name}</Text>
                                             <View style={styles.addresh}>
                                                 <TouchableOpacity  >
-                                                    <Text style={{width:200}} >{item.address}</Text>
+                                                    <Text style={{width:200,color:'#333'}} >{item.address}</Text>
                                                 </TouchableOpacity>
                                                 <Rating style={{marginTop:5,alignSelf:'flex-start'}}
                                                 imageSize={12}

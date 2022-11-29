@@ -124,7 +124,7 @@ const BranchesViewAll = ({ navigation }) => {
                                                 alignSelf: 'center',
                                             }}
                                         />
-                                        <Text style={styles.txt} >{item.title}</Text>
+                                        <Text style={styles.txt} >{item.depart_name}</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>

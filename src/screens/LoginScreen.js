@@ -246,6 +246,8 @@ const LoginScreen = ({ navigation }) => {
               <InputField
                 label={'Enter your Phone No. '}
                 value={userNumber}
+                color={'#333'}
+                pcolor={'#333'}
                 onChangeText={setUserNumber}
                 icon={
                   <Ionicons
@@ -268,7 +270,7 @@ const LoginScreen = ({ navigation }) => {
                 </Text>
               </TouchableOpacity>
 
-              <View
+              {/* <View
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'space-between',
@@ -307,7 +309,7 @@ const LoginScreen = ({ navigation }) => {
                   }}>
                   <TwitterSVG height={24} width={24} />
                 </TouchableOpacity>
-              </View>
+              </View> */}
 
               {/* <View
           style={{

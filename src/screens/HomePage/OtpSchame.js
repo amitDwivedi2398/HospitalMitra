@@ -77,7 +77,7 @@ const OtpSchame = ({ navigation,route }) => {
                                             <Text style={{ width: 200, fontFamily: 'Inter-Bold', color: '#4584FF' }} >{item.doctor_name}</Text>
                                             <View style={styles.addresh}>
                                                 <TouchableOpacity  >
-                                                    <Text style={{ width: 200 }} >{item.days_checkbox}</Text>
+                                                    <Text style={{ width: 200,color:'#333' }} >{item.days_checkbox}</Text>
                                                     <Text style={{ width: 200, marginTop: 5, color: '#6A6A6A', fontFamily: 'Inter-Bold' }} >{item.time}</Text>
                                                 </TouchableOpacity>
                                             </View>
