@@ -19,7 +19,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-export default function FavoriteScreen({ navigation }) {
+export default function ChatScreen({ navigation,route }) {
+  const {formid} = route.params;
   const [storeddata, setStoreddata] = useState('');
 
   const [chatUser] = useState({
@@ -158,7 +159,8 @@ export default function FavoriteScreen({ navigation }) {
   const send = async (id) => {
     axios.post(`http://hospitalmitra.in/newadmin/api/ApiCommonController/chat`,
       {
-        message: inputMessage
+        message: inputMessage,
+        chat_id:formid
       },
       {
         headers: {
@@ -225,41 +227,34 @@ export default function FavoriteScreen({ navigation }) {
             <View>
               <TouchableWithoutFeedback>
                 <View style={{ marginTop: 6 }}>
-                  <View
+                <View
+                  style={{
+                    maxWidth: Dimensions.get('screen').width * 0.9,
+
+                  }}
+                >
+                <View style={styles.msg} >
+                <Text
                     style={{
-                      maxWidth: Dimensions.get('screen').width * 0.8,
-                      backgroundColor: '#3a6ee8',
-                      alignSelf:
-                        item.sender === currentUser.name
-                          ? 'flex-end'
-                          : 'flex-start',
-                      marginHorizontal: 10,
-                      padding: 10,
-                      borderRadius: 8,
-                      borderBottomLeftRadius:
-                        item.sender === currentUser.name ? 8 : 0,
-                      borderBottomRightRadius:
-                        item.sender === currentUser.name ? 0 : 8,
+                      color: '#fff',
+                      fontSize: 16,
                     }}
                   >
-                    <Text
-                      style={{
-                        color: '#fff',
-                        fontSize: 16,
-                      }}
-                    >
-                      {item.message}
-                    </Text>
-                    <Text
-                      style={{
-                        color: '#dfe4ea',
-                        fontSize: 14,
-                        alignSelf: 'flex-end',
-                      }}
-                    >
-                      {item.time}
-                    </Text>
-                  </View>
+                    {item.message}
+                  </Text>
+                </View>
+                  <Text
+                    style={{
+                      color: '#333',
+                      fontSize: 16,
+                      justifyContent:'flex-end',
+                      alignItems:'flex-end',
+                      alignSelf:'flex-end',
+                    }}
+                  >
+                    {item.worker_message}
+                  </Text>
+                </View>
                 </View>
               </TouchableWithoutFeedback>
             </View>
@@ -321,4 +316,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     justifyContent: 'center',
   },
+  msg:{
+    width:150,padding: 10,borderRadius: 8,backgroundColor: '#3a6ee8',justifyContent:'center',alignItems:'center',marginHorizontal:10
+  }
 });

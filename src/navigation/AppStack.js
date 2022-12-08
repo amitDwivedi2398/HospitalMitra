@@ -40,6 +40,9 @@ import TopSheme from '../screens/TopSheme';
 import NoticeScreen from '../screens/NoticeScreen';
 import FavoriteScreen from '../screens/DrawerPages/FavoriteScreen';
 import ChangeLng from '../screens/DrawerPages/ChangeLng';
+import ModelScreen from '../screens/Model/ModelScreen';
+import ChatFormScreen from '../screens/ChatFormScreen';
+import ChatScreen from '../screens/ChatScreen';
 
 
 const Drawer = createDrawerNavigator();
@@ -125,6 +128,16 @@ const HomeStack = () => {
       <Stack.Screen
         name="Notice"
         component={NoticeScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Model"
+        component={ModelScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ChatScreen"
+        component={ChatScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

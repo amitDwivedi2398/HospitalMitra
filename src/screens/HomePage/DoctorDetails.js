@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, SafeAreaView, ScrollView, TextInput, FlatList, Image, TouchableOpacity, Alert, ImageBackground } from 'react-native';
+import { View, StyleSheet, Text, SafeAreaView, ScrollView, TextInput, FlatList, Image, TouchableOpacity, Alert, ImageBackground, Modal, TouchableWithoutFeedback } from 'react-native';
 import CustomHeader from '../../components/CustomHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
@@ -11,10 +11,10 @@ import axios from 'axios';
 
 
 
-const DoctorDetails = ({ navigation,route }) => {
-    const {id} = route.params;
+const DoctorDetails = ({ navigation, route }) => {
+    const { id } = route.params;
     const [hospitalDetails, setHospitalDetails] = useState([])
-    console.log("amit id",id);
+    console.log("amit id", id);
     const [images, setimages] = useState([
         { src: require('../../assets/ResultFindDoctor/img.png'), title: 'Dr. Vishwas Madhav Thakur', key: '1' },
     ]);
@@ -43,12 +43,11 @@ const DoctorDetails = ({ navigation,route }) => {
         getHospitalDetails();
     }, []);
 
-
     return (
         <SafeAreaView style={styles.container} >
             <ScrollView>
                 <CustomHeader />
-                
+
                 <View style={styles.searchWrapperStyle}>
                     <Ionicons size={18} name="search-outline" color="white" style={styles.iconStyle} />
                     <TextInput
@@ -67,9 +66,9 @@ const DoctorDetails = ({ navigation,route }) => {
                             <View style={{ flex: 1 }}>
                                 <View style={styles.mainView} >
                                     <View style={styles.mainRow} >
-                                        <TouchableOpacity style={styles.btn}
+                                        <View style={styles.btn}
                                         //  onPress={() => navigation.navigate('FacilityScreen')}
-                                         >
+                                        >
                                             <Image
                                                 source={{ uri: `${item.image}` }}
                                                 style={{
@@ -77,25 +76,35 @@ const DoctorDetails = ({ navigation,route }) => {
                                                     height: 60,
                                                     alignSelf: 'center',
                                                     marginHorizontal: 10,
-                                                    borderRadius:50
+                                                    borderRadius: 50
                                                 }}
                                             />
                                             <View style={{ alignSelf: 'center' }} >
-                                                <Text style={{ width: 200,color:'#333' }} >{item.name}</Text>
+                                                <Text style={{ width: 200, color: '#333' }} >{item.name}</Text>
                                                 <View style={styles.addresh}>
-                                                    <TouchableOpacity  >
-                                                        <Text style={{ width: 200,color:'#333' }} >{item.address}</Text>
-                                                    </TouchableOpacity>
-                                                    <Rating style={{ marginTop: 5, alignSelf: 'flex-start' }}
-                                                        imageSize={12}
+                                                    <Text style={{ width: 200, color: '#333' }} >{item.address}</Text>
+                                                    {item.type == 'Private'?
+                                                    (
+                                                        <View>
+                                                        <Rating style={{ alignSelf: 'flex-start' }}
+                                                        imageSize={15}
                                                         tintColor='#F3F3F3'
-                                                        onFinishRating={(rating) => {
-                                                            Alert.alert('Star Rating: ' + JSON.stringify(rating));
-                                                        }}
+                                                        ratingCount={3}
                                                     />
+
+                                                    <TouchableOpacity onPress={() => navigation.navigate('Model', { id: item.id, name: item.name })} >
+                                                        <Text style={{ color: '#4582FF', fontWeight: '900' }} >Rate Hospital</Text>
+
+                                                    </TouchableOpacity>
+                                                        </View>
+                                                        )
+                                                    :
+                                                    (<View></View>)
+                                                    }
+                                                    
                                                 </View>
                                             </View>
-                                        </TouchableOpacity>
+                                        </View>
 
                                     </View>
                                 </View>
@@ -110,14 +119,14 @@ const DoctorDetails = ({ navigation,route }) => {
                     renderItem={({ item }) => (
                         <View  >
                             <View style={styles.mainContainer}>
-                                <TouchableOpacity style={styles.sectonBtn} onPress={()=>navigation.navigate('ToDoOpd', {id:id})}>
+                                <TouchableOpacity style={styles.sectonBtn} onPress={() => navigation.navigate('ToDoOpd', { id: id })}>
                                     <ImageBackground imageStyle={{ borderRadius: 10 }} style={styles.sectionBgImage} source={item.img} resizeMode='cover'>
                                         <View style={styles.txtView}>
                                             <Text style={styles.txt} >{item.titleName}</Text>
                                         </View>
                                     </ImageBackground>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.sectonBtn} onPress={()=> navigation.navigate('FacilityScreen',{id:id})}  >
+                                <TouchableOpacity style={styles.sectonBtn} onPress={() => navigation.navigate('FacilityScreen', { id: id })}  >
                                     <ImageBackground imageStyle={{ borderRadius: 10 }} style={styles.sectionBgImage} source={item.img} resizeMode='cover'>
                                         <View style={styles.txtView}>
                                             <Text style={styles.txt} >Available Facilities</Text>
@@ -126,14 +135,14 @@ const DoctorDetails = ({ navigation,route }) => {
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.mainContainer}>
-                                <TouchableOpacity style={styles.sectonBtn} onPress={() => navigation.navigate('OptSchameCatagiry',{id:id})}  >
+                                <TouchableOpacity style={styles.sectonBtn} onPress={() => navigation.navigate('OptSchameCatagiry', { id: id })}  >
                                     <ImageBackground imageStyle={{ borderRadius: 10 }} style={styles.sectionBgImage} source={item.img} resizeMode='cover'>
                                         <View style={styles.txtView}>
                                             <Text style={styles.txt} >OPD Schedule</Text>
                                         </View>
                                     </ImageBackground>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.sectonBtn} onPress={()=> navigation.navigate('InvestigationScreen',{id:id})} >
+                                <TouchableOpacity style={styles.sectonBtn} onPress={() => navigation.navigate('InvestigationScreen', { id: id })} >
                                     <ImageBackground imageStyle={{ borderRadius: 10 }} style={styles.sectionBgImage} source={item.img} resizeMode='cover'>
                                         <View style={styles.txtView}>
                                             <Text style={styles.txt} >Investigation and Intervention</Text>
@@ -145,9 +154,9 @@ const DoctorDetails = ({ navigation,route }) => {
                     )}
                 />
                 <View style={{ padding: 5, marginBottom: 10 }} >
-                        <View style={styles.sliderImg}>
-                            <Image style={styles.baner} source={require('../../assets/images/departmentHospital.png')} />
-                        </View>
+                    <View style={styles.sliderImg}>
+                        <Image style={styles.baner} source={require('../../assets/images/departmentHospital.png')} />
+                    </View>
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -217,16 +226,16 @@ const styles = StyleSheet.create({
         flex: 1, padding: 10, borderRadius: 10, backgroundColor: '#F3F3F3',
         flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     },
-    sectonBtn:{
+    sectonBtn: {
         justifyContent: 'center', alignItems: 'center', justifyContent: 'space-between', width: '50%'
     },
-    sectionBgImage:{
+    sectionBgImage: {
         height: 150, width: '95%', justifyContent: 'center', alignItems: 'center',
     },
-    txtView:{
-        backgroundColor: 'rgba(0,0,0,0.5)', width: '100%', height: '100%', justifyContent: 'center', alignSelf: 'center', borderRadius: 10 
+    txtView: {
+        backgroundColor: 'rgba(0,0,0,0.5)', width: '100%', height: '100%', justifyContent: 'center', alignSelf: 'center', borderRadius: 10
     },
-    txt:{
+    txt: {
         alignSelf: 'center', textAlign: 'center', color: '#fff', fontFamily: 'Inter-Bold',
     }
 })

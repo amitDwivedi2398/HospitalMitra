@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "94404978545",
-    "project_id": "hospitalmitra-7a54c",
-    "storage_bucket": "hospitalmitra-7a54c.appspot.com"
+    "project_number": "1045556621099",
+    "project_id": "hospitalmitra-fd2f2",
+    "storage_bucket": "hospitalmitra-fd2f2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:94404978545:android:2e9bea1b1c77df4f4eb8d0",
+        "mobilesdk_app_id": "1:1045556621099:android:8f97b3f8711a51e4f29f6e",
         "android_client_info": {
           "package_name": "com.HospitalMitra"
         }
       },
       "oauth_client": [
         {
-          "client_id": "94404978545-h7gkmn0va5aetgogog40qtomh9ae0s08.apps.googleusercontent.com",
+          "client_id": "1045556621099-4vrl03ish1goqe1vl32q41qsugc5n5lv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.HospitalMitra",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "1045556621099-nnd3ie1sthprnocj2sb11e3su4k1si3m.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCwkXN6k0naWuvB43BaFUgwcJ8SfeFBVp0"
+          "current_key": "AIzaSyATxoIKreiECaEt-mVHnclXcfEsRmnCtUM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "94404978545-h7gkmn0va5aetgogog40qtomh9ae0s08.apps.googleusercontent.com",
+              "client_id": "1045556621099-nnd3ie1sthprnocj2sb11e3su4k1si3m.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

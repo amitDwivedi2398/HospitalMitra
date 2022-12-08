@@ -28,7 +28,9 @@ const ToDoOpd = ({route}) => {
         <SafeAreaView style={{flex:1}} >
         <CustomHeader/>
         <View style={{flex:1}} >
-                <Image style={{width:'100%',height:'100%'}} source={{ uri: `${whatOpd.image}` }} />
+                <Image
+                resizeMode="cover"
+                 style={{position: "absolute",width: "95%",height: "100%",alignSelf:'center',padding:10,marginVertical:5}} source={{ uri: `${whatOpd.image}` }} />
             </View>
         </SafeAreaView>
     );

@@ -119,13 +119,7 @@ const CenterNameScreen = ({route, navigation }) => {
                                                 <TouchableOpacity  >
                                                     <Text style={{width:200,color:'#333'}} >{item.address}</Text>
                                                 </TouchableOpacity>
-                                                <Rating style={{marginTop:5,alignSelf:'flex-start'}}
-                                                imageSize={12}
-                                                tintColor='#F3F3F3'
-                                                    onFinishRating={(rating) => {
-                                                        Alert.alert('Star Rating: ' + JSON.stringify(rating));
-                                                    }}
-                                                />
+                                                
                                             </View>
                                         </View>
                                     </TouchableOpacity>

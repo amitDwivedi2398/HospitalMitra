@@ -10,6 +10,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import TopSheme from '../screens/TopSheme';
 import ChatScreen from '../screens/ChatScreen';
 import NoticeScreen from '../screens/NoticeScreen';
+import ChatFormScreen from '../screens/ChatFormScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -60,8 +61,8 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Chat"
-        component={ChatScreen}
+        name="ChatForm"
+        component={ChatFormScreen}
         options={{
           tabBarIcon: ({color, size}) => (
             <Ionicons name="chatbubble-ellipses-outline" color={color} size={size} />
