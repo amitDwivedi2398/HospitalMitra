@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, SafeAreaView, Image, } from 'react-native';
@@ -7,6 +8,8 @@ import CustomButton from '../../components/CustomButton';
 
 const DoctorAbout = ({ navigation,route }) => {
     const {id} = route.params;
+    const {centerName} = route.params;
+    console.log("centerName ??",centerName);
     console.log("ID ??",id);
     const [doctor, setDoctor] = useState([])
     
@@ -27,6 +30,26 @@ const DoctorAbout = ({ navigation,route }) => {
     useEffect(() => {
         getDocter();
     }, []);
+    const SendEnq = async (id)=>{
+        axios.post(`http://hospitalmitra.in/newadmin/api/ApiCommonController/enquarityform`,
+        {
+            user_id:await AsyncStorage.getItem('user_id'),
+            doctor_name:doctor.doctor_name,
+            center_name:centerName,
+            speciality:doctor.speciality,
+            fees:doctor.fees,
+        },)
+          .then(response => {
+            console.log('////////', response.data);
+            if(response.data){
+                alert("successfully send enquiry");
+                return;
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          })    
+    }
     return (
         <SafeAreaView style={styles.container} >
             <BackHeader TitleName={'name'} onPress={() => navigation.goBack()} />
@@ -71,7 +94,7 @@ const DoctorAbout = ({ navigation,route }) => {
             </View>
 
             <View style={{width:'90%',alignSelf:'center'}} >
-            <CustomButton label={'SEND ENQUIRY'} />
+            <CustomButton label={'SEND ENQUIRY'} onPress={SendEnq} />
             </View>
         </SafeAreaView>
     );

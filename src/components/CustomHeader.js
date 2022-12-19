@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, ImageBackground, TouchableOpacity, DevSettings } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
@@ -97,7 +98,12 @@ const CustomHeader = ({ IconName, TitleName, props }) => {
                         </TouchableOpacity>
                         <TouchableOpacity style={{ justifyContent: 'center', alignSelf: 'center', marginLeft: 10 }} >
                             <Text style={{ color: '#fff' }} >Your Location</Text>
-                            <View style={{ width: 120, }}>
+                            <TouchableOpacity style={{flexDirection:'row',justifyContent:'center'}}  onPress={()=>navigation.navigate('CityScreen')} >
+                                <Text style={{ color: '#fff' }}>{city}</Text>
+                                <Ionicons name="caret-down-outline" color={'#fff'} size={20} />
+                            </TouchableOpacity>
+
+                            {/* <View style={{ width: 150, }}>
                                 <Dropdown
                                     style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
                                     placeholderStyle={styles.placeholderStyle}
@@ -139,7 +145,7 @@ const CustomHeader = ({ IconName, TitleName, props }) => {
                                         setIsFocus(false);
                                     }}
                                 />
-                            </View>
+                            </View> */}
                         </TouchableOpacity>
                     </View>
                     <TouchableOpacity onPress={() => navigation.navigate('NotificationScreen')} >

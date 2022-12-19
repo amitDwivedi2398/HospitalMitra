@@ -11,7 +11,6 @@ import {
   Image,
   RefreshControl
 } from 'react-native';
-import Carousel from 'react-native-snap-carousel';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import BannerSlider from '../components/BannerSlider';
@@ -25,6 +24,7 @@ import MarqueeView from 'react-native-marquee-view';
 import strings from '../constants/lng/LocalizedStrings';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SliderBox } from 'react-native-image-slider-box';
 
 export default function HomeScreen({ navigation }) {
   const [gamesTab, setGamesTab] = useState(1);
@@ -34,12 +34,13 @@ export default function HomeScreen({ navigation }) {
   const [cityId, setCityId] = useState([]);
   const [topBaneer, setTopBaneer] = useState([]);
   const [bottomBaner, setBottomBaner] = useState([]);
+  const [slider, setSlider] = useState([]);
   const [storeddata, setStoreddata] = useState('');
   const [isLoded, setIsLoded] = useState(false);
 
 
 
-  console.log("city id ?????",cityId);
+  console.log("city id ?????", cityId);
 
   const renderBanner = ({ item, index }) => {
     return <BannerSlider data={item} />;
@@ -50,33 +51,33 @@ export default function HomeScreen({ navigation }) {
   };
   const getData = async () => {
     try {
-        const user_id = await AsyncStorage.getItem('user_id');
-        if (user_id !== null) {
-            console.log('@@@@@@@@', user_id);
-            setStoreddata(user_id);
-        }
+      const user_id = await AsyncStorage.getItem('user_id');
+      if (user_id !== null) {
+        console.log('@@@@@@@@', user_id);
+        setStoreddata(user_id);
+      }
     } catch (e) {
-        console.log('no Value in login');
+      console.log('no Value in login');
     }
-};
+  };
   const getCity = async () => {
     axios
-        .get(
-            `http://hospitalmitra.in/newadmin/api/ApiCommonController/getcityppp/${storeddata}`,
-        )
-        .then(response => {
-            console.log(" city name list id <<<<<", response.data.data);
-            const idcity = response.data.data
-            setCityId(idcity[0].city_id)
-        })
-        .catch(error => {
-            console.log(error);
-        });
-};
-useEffect(() => {
+      .get(
+        `http://hospitalmitra.in/newadmin/api/ApiCommonController/getcityppp/${storeddata}`,
+      )
+      .then(response => {
+        console.log(" city name list id <<<<<", response.data.data);
+        const idcity = response.data.data
+        setCityId(idcity[0].city_id)
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
     getCity();
     getData();
-}, [storeddata]);
+  }, [storeddata]);
   const getBranch = async () => {
     setIsLoded(true);
     axios
@@ -84,7 +85,7 @@ useEffect(() => {
         `http://hospitalmitra.in/newadmin/api/ApiCommonController/newbranchapi/${storeddata}`,
       )
       .then(response => {
-        console.log("branch list <<<<<",response.data.data);
+        console.log("branch list <<<<<", response.data.data);
         setBranch(response.data.data)
         setIsLoded(false);
       })
@@ -98,7 +99,7 @@ useEffect(() => {
         `http://hospitalmitra.in/newadmin/api/ApiCommonController/noticeboard/${storeddata}`,
       )
       .then(response => {
-        console.log("announcement list <<<<<",response.data.data);
+        console.log("announcement list <<<<<", response.data.data);
         setAnnouncement(response.data.data)
       })
       .catch(error => {
@@ -111,7 +112,7 @@ useEffect(() => {
         `http://hospitalmitra.in/newadmin/api/ApiCommonController/topscheme/${storeddata}`,
       )
       .then(response => {
-        console.log("topScheme list <<<<<",response.data.data);
+        console.log("topScheme list <<<<<", response.data.data);
         settopScheme(response.data.data)
       })
       .catch(error => {
@@ -124,7 +125,7 @@ useEffect(() => {
         `http://hospitalmitra.in/newadmin/api/ApiCommonController/topbanner`,
       )
       .then(response => {
-        console.log("getTop image list <<<<<",response.data.data);
+        console.log("getTop image list <<<<<", response.data.data);
         const topBanner = response.data.data[0]
         setTopBaneer(topBanner)
       })
@@ -138,9 +139,22 @@ useEffect(() => {
         `http://hospitalmitra.in/newadmin/api/ApiCommonController/bottombanner`,
       )
       .then(response => {
-        console.log("getBottom image list <<<<<",response.data.data);
+        console.log("getBottom image list <<<<<", response.data.data);
         const bottom = response.data.data[0]
         setBottomBaner(bottom)
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  const sliderBanner = async () => {
+    axios
+      .get(
+        `http://hospitalmitra.in/newadmin/api/ApiCommonController/topbanner`,
+      )
+      .then(response => {
+        console.log("sliderBanner image list <<<<<", response.data.data);
+        setSlider(response.data.data[0])
       })
       .catch(error => {
         console.log(error);
@@ -151,21 +165,29 @@ useEffect(() => {
     getAnnouncement();
     getScheme();
     getBottom();
+    sliderBanner();
     getTop();
   }, [cityId]);
 
+  const image = [
+    { uri: `${slider.image1}` },
+    { uri: `${slider.image2}` },
+    { uri: `${slider.image3}` },
+  ]
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <CustomHeader TitleName={'Hospital Mitra'} />
 
       <ScrollView style={{ padding: 10 }}>
-        <Carousel
-          data={sliderData}
-          renderItem={renderBanner}
-          sliderWidth={windowWidth - 20}
-          itemWidth={300}
-          loop={true}
+        <SliderBox
+          images={image}
+          dotColor="#4582FF"
+          inactiveDotColor='black'
+          dotStyle={{ height: 15, width: 15, borderRadius: 50 }}
+          imageLoadingColor="black"
           autoplay={true}
+          autoplayInterval={2000}
+          circleLoop={true}
         />
         <MarqueeView
           style={{ backgroundColor: '#fff', width: '100%', padding: 10 }}>
@@ -176,73 +198,73 @@ useEffect(() => {
         <View style={{ padding: 5 }}>
           <View style={styles.topHeding} >
             <Text style={styles.title} >{strings.TOP_BRANCHES}</Text>
-            <TouchableOpacity onPress={()=> navigation.navigate('BranchesViewAll')} >
+            <TouchableOpacity onPress={() => navigation.navigate('BranchesViewAll')} >
               <Text style={styles.viewAll} >View All</Text>
             </TouchableOpacity>
           </View>
           <ScrollView horizontal={true} style={{ flexDirection: 'row' }} >
-          {branch?.map((item)=>(
-            <View style={styles.sliderImg} >
-              <TouchableOpacity onPress={() => navigation.navigate('CenterNameScreen',{id:item.id}  )} >
-              <ImageBackground imageStyle={{borderRadius:10}} style={styles.slider}  source={{uri: `${item.image}`}} >
-                    
-              </ImageBackground>
-              </TouchableOpacity>
-              <Text style={styles.textTilte} >{item.depart_name}</Text>
-            </View>
+            {branch?.map((item) => (
+              <View style={styles.sliderImg} >
+                <TouchableOpacity onPress={() => navigation.navigate('CenterNameScreen', { id: item.id })} >
+                  <ImageBackground imageStyle={{ borderRadius: 10 }} style={styles.slider} source={{ uri: `${item.image}` }} >
+
+                  </ImageBackground>
+                </TouchableOpacity>
+                <Text style={styles.textTilte} >{item.depart_name}</Text>
+              </View>
             ))}
           </ScrollView>
         </View>
         <View style={{ padding: 5 }} >
-        <View style={styles.topHeding} >
+          <View style={styles.topHeding} >
             <Text style={styles.title} >{strings.TOP_ANNOUNCEMENT}</Text>
-            <TouchableOpacity onPress={()=> navigation.navigate('Notice')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Notice')}>
               <Text style={styles.viewAll} >View All</Text>
             </TouchableOpacity>
           </View>
           <ScrollView horizontal={true} style={{ flexDirection: 'row' }} >
-          {announcement?.map((item)=>(
-            <View style={styles.sliderImg} >
-              <TouchableOpacity onPress={()=> navigation.navigate('Notice')} >
-              <ImageBackground imageStyle={{borderRadius:10}} style={styles.slider}  source={{uri: `${item.image}`}} >
-                    
-              </ImageBackground>
-              </TouchableOpacity>
-              <Text style={styles.textTilte} >{item.title}</Text>
-            </View>
+            {announcement?.map((item) => (
+              <View style={styles.sliderImg} >
+                <TouchableOpacity onPress={() => navigation.navigate('Notice')} >
+                  <ImageBackground imageStyle={{ borderRadius: 10 }} style={styles.slider} source={{ uri: `${item.image}` }} >
+
+                  </ImageBackground>
+                </TouchableOpacity>
+                <Text style={styles.textTilte} >{item.title}</Text>
+              </View>
             ))}
           </ScrollView>
         </View>
         <View style={{ padding: 5 }} >
-        <View style={styles.topHeding} >
+          <View style={styles.topHeding} >
             <Text style={styles.title} >Top Scheme</Text>
-            <TouchableOpacity onPress={()=> navigation.navigate('TopSheme')}>
+            <TouchableOpacity onPress={() => navigation.navigate('TopSheme')}>
               <Text style={styles.viewAll} >View All</Text>
             </TouchableOpacity>
           </View>
           <ScrollView horizontal={true} style={{ flexDirection: 'row' }} >
-          {topScheme?.map((item)=>(
-            <View style={styles.sliderImg} >
-              <TouchableOpacity onPress={()=> navigation.navigate('TopSheme')}>
-              <ImageBackground imageStyle={{borderRadius:10}} style={styles.slider}  source={{uri: `${item.image}`}} >
-                    
-              </ImageBackground>
-              </TouchableOpacity>
-              <Text style={styles.textTilte} >{item.description}</Text>
-            </View>
+            {topScheme?.map((item) => (
+              <View style={styles.sliderImg} >
+                <TouchableOpacity onPress={() => navigation.navigate('TopSheme')}>
+                  <ImageBackground imageStyle={{ borderRadius: 10 }} style={styles.slider} source={{ uri: `${item.image}` }} >
+
+                  </ImageBackground>
+                </TouchableOpacity>
+                <Text style={styles.textTilte} >{item.description}</Text>
+              </View>
             ))}
           </ScrollView>
         </View>
         <View style={{ padding: 5, marginBottom: 10 }} >
-          <ScrollView  horizontal={true}  style={{ flexDirection: 'row' }} >
+          <ScrollView horizontal={true} style={{ flexDirection: 'row' }} >
             <View style={styles.sliderImg1}>
-              <Image style={styles.baner} source={{uri: `${bottomBaner.image1}`}} />
+              <Image style={styles.baner} source={{ uri: `${bottomBaner.image1}` }} />
             </View>
             <View style={styles.sliderImg1} >
-              <Image style={styles.baner} source={{uri: `${bottomBaner.image2}`}} />
+              <Image style={styles.baner} source={{ uri: `${bottomBaner.image2}` }} />
             </View>
             <View style={styles.sliderImg1} >
-              <Image style={styles.baner} source={{uri: `${bottomBaner.image3}`}} />
+              <Image style={styles.baner} source={{ uri: `${bottomBaner.image3}` }} />
             </View>
           </ScrollView>
         </View>
@@ -257,17 +279,17 @@ const styles = StyleSheet.create({
   viewAll: {
     color: '#6F6F6F', fontSize: 15, fontWeight: '500'
   },
-  topHeding:{
-    flexDirection: 'row', 
+  topHeding: {
+    flexDirection: 'row',
     justifyContent: 'space-between',
-     marginBottom: 10
+    marginBottom: 10
   },
   slider: {
     width: '97%',
     height: 100,
     borderRadius: 10,
-    justifyContent:'center',
-    alignSelf:'center'
+    justifyContent: 'center',
+    alignSelf: 'center'
   },
   sliderImg: {
     backgroundColor: '#F3F3F3',
@@ -279,7 +301,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowRadius: 10,
     marginHorizontal: 5,
-    width:150
+    width: 150
   },
   sliderImg1: {
     backgroundColor: '#F3F3F3',
@@ -299,8 +321,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     borderRadius: 10,
   },
-  textTilte:{
-    color:'black',fontFamily:'Roboto-Regular',fontSize:15,marginLeft:10,fontWeight:'700',height:20,
+  textTilte: {
+    color: 'black', fontFamily: 'Roboto-Regular', fontSize: 15, marginLeft: 10, fontWeight: '700', height: 20,
   }
 })
 

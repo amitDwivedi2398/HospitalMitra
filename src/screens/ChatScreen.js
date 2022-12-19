@@ -22,6 +22,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function ChatScreen({ navigation,route }) {
   const {formid} = route.params;
   const [storeddata, setStoreddata] = useState('');
+  const [docterDetails, setDocterDetails] = useState([]);
 
   const [chatUser] = useState({
     name: 'Robert Henry',
@@ -151,8 +152,23 @@ export default function ChatScreen({ navigation,route }) {
         console.log(error);
       });
   };
+  const getDocterDetails = async () => {
+    axios
+      .get(
+        `http://hospitalmitra.in/newadmin/api/ApiCommonController/enquiry/${storeddata}`,
+      )
+      .then(response => {
+        console.log("Docter Details list <<<<<", response.data.data);
+        const res = response.data.data
+        setDocterDetails(res[0])
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
   useEffect(() => {
     getProfile();
+    getDocterDetails();
     getRecevied();
     getData();
   }, [storeddata]);
@@ -219,6 +235,13 @@ export default function ChatScreen({ navigation,route }) {
             </Text> */}
           </View>
         </View>
+        <View>
+        <View style={{flexDirection:'row',justifyContent:'space-between',padding:10}}>
+        <Text style={styles.dnameStyle} >{docterDetails.doctor_name}</Text>
+        <Text style={styles.dnameStyle} >{docterDetails.center_name}</Text>
+        <Text style={styles.dnameStyle} >{docterDetails.fees}</Text>
+        </View>
+        </View>
         <FlatList
           style={{ backgroundColor: '#f2f2ff' }}
           inverted={true}
@@ -233,16 +256,15 @@ export default function ChatScreen({ navigation,route }) {
 
                   }}
                 >
-                <View style={styles.msg} >
                 <Text
                     style={{
-                      color: '#fff',
+                      color: '#333',
                       fontSize: 16,
+                      marginHorizontal:10
                     }}
                   >
-                    {item.message}
+                    {item.worker_message}
                   </Text>
-                </View>
                   <Text
                     style={{
                       color: '#333',
@@ -252,7 +274,7 @@ export default function ChatScreen({ navigation,route }) {
                       alignSelf:'flex-end',
                     }}
                   >
-                    {item.worker_message}
+                    {item.message}
                   </Text>
                 </View>
                 </View>
@@ -318,5 +340,8 @@ const styles = StyleSheet.create({
   },
   msg:{
     width:150,padding: 10,borderRadius: 8,backgroundColor: '#3a6ee8',justifyContent:'center',alignItems:'center',marginHorizontal:10
+  },
+  dnameStyle:{
+    color:'#4582FF',fontSize:17,fontWeight:'600'
   }
 });

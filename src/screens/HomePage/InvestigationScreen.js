@@ -8,17 +8,40 @@ import CustomHeader from '../../components/CustomHeader';
 import { sliderData } from '../../model/data';
 import { windowWidth } from '../../utils/Dimensions';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { SliderBox } from 'react-native-image-slider-box';
+
 
 const renderBanner = ({ item, index }) => {
     return <BannerSlider data={item} />;
 };
-const InvestigationScreen = ({navigation,route}) => {
-    const {id} = route.params;
+const InvestigationScreen = ({ navigation, route }) => {
+    const { id } = route.params;
     const [schedule, setSchedule] = useState([])
     const [filterData, setfilterData] = useState([]);
     const [search, setSearch] = React.useState('');
+    const [slider, setSlider] = useState([]);
 
-
+    const image = [
+        { uri: `${slider.image1}` },
+        { uri: `${slider.image2}` },
+        { uri: `${slider.image3}` },
+    ]
+    const sliderBanner = async () => {
+        axios
+            .get(
+                `http://hospitalmitra.in/newadmin/api/ApiCommonController/topbanner`,
+            )
+            .then(response => {
+                console.log("sliderBanner image list <<<<<", response.data.data);
+                setSlider(response.data.data[0])
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+    useEffect(() => {
+        sliderBanner()
+    }, []);
     const searchFilterFuntion = (text) => {
         if (text) {
             const newData = schedule.filter(
@@ -59,26 +82,28 @@ const InvestigationScreen = ({navigation,route}) => {
             <ScrollView>
                 <CustomHeader />
                 <View style={styles.searchWrapperStyle}>
-                <Ionicons size={18} name="search-outline" color="white" style={styles.iconStyle} />
-                <TextInput
-                    style={{ flex: 1 }}
-                    onChangeText={(text) => searchFilterFuntion(text)}
-                    value={search}
-                    underlineColorAndroid='transparent'
-                    placeholder='Search Here'
-                    placeholderTextColor={'#fff'}
-                    placeholderColor={'#fff'}
-                    color={'#fff'}
-                />
-            </View>
+                    <Ionicons size={18} name="search-outline" color="white" style={styles.iconStyle} />
+                    <TextInput
+                        style={{ flex: 1 }}
+                        onChangeText={(text) => searchFilterFuntion(text)}
+                        value={search}
+                        underlineColorAndroid='transparent'
+                        placeholder='Search Here'
+                        placeholderTextColor={'#fff'}
+                        placeholderColor={'#fff'}
+                        color={'#fff'}
+                    />
+                </View>
                 <View>
-                    <Carousel
-                        data={sliderData}
-                        renderItem={renderBanner}
-                        sliderWidth={windowWidth +5}
-                        itemWidth={310}
-                        loop={true}
+                    <SliderBox
+                        images={image}
+                        dotColor="#4582FF"
+                        inactiveDotColor='black'
+                        dotStyle={{ height: 20, width: 20, borderRadius: 50 }}
+                        imageLoadingColor="black"
                         autoplay={true}
+                        autoplayInterval={2000}
+                        circleLoop={true}
                     />
                 </View>
                 <View>
@@ -95,8 +120,8 @@ const InvestigationScreen = ({navigation,route}) => {
                                                 style={{
                                                     width: 60,
                                                     height: 60,
-                                                    borderRadius:40,
-                                                    marginHorizontal:10
+                                                    borderRadius: 40,
+                                                    marginHorizontal: 10
                                                 }}
                                             />
                                             <Text style={styles.txt} >{item.test_name}</Text>
@@ -107,7 +132,7 @@ const InvestigationScreen = ({navigation,route}) => {
                         )}
                     />
                 </View>
-                <View style={{  }} >
+                <View style={{}} >
                     <View style={styles.sliderImg}>
                         <Image style={styles.baner} source={require('../../assets/images/departmentHospital.png')} />
                     </View>
@@ -121,33 +146,33 @@ const styles = StyleSheet.create({
     mainView: {
     },
     mainRow: {
-        backgroundColor:'#fff',
-        width:'92%',
-        alignSelf:'center',
-        height:80,
-        justifyContent:'center',
-        borderRadius:10,
+        backgroundColor: '#fff',
+        width: '92%',
+        alignSelf: 'center',
+        height: 80,
+        justifyContent: 'center',
+        borderRadius: 10,
         shadowColor: 'blue',
         elevation: 7,
         shadowRadius: 10,
-        marginVertical:10
+        marginVertical: 10
     },
     btn: {
-        flexDirection:'row',
-        alignItems:'center',
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     txt: {
-      fontSize:18,
-      fontWeight:'600',
-      color:'black'
+        fontSize: 18,
+        fontWeight: '600',
+        color: 'black'
     },
     sliderImg: {
-        backgroundColor:'#fff',
-        height:130,
-        justifyContent:'center',
-        width:'92%',
-        alignSelf:'center',
-        borderRadius:10,
+        backgroundColor: '#fff',
+        height: 130,
+        justifyContent: 'center',
+        width: '92%',
+        alignSelf: 'center',
+        borderRadius: 10,
         shadowColor: 'blue',
         elevation: 7,
         shadowRadius: 10,
@@ -156,15 +181,15 @@ const styles = StyleSheet.create({
         width: '95%',
         height: 120,
         borderRadius: 10,
-        alignSelf:'center'
+        alignSelf: 'center'
     },
     searchWrapperStyle: {
         backgroundColor: "#4584FF",
         flexDirection: "row",
-        marginVertical:10,
-        width:'95%',
-        borderRadius:25,
-        alignSelf:'center',
+        marginVertical: 10,
+        width: '95%',
+        borderRadius: 25,
+        alignSelf: 'center',
     },
     iconStyle: {
         marginTop: 15,

@@ -42,6 +42,7 @@ const ProfileScreen = ({ navigation }) => {
   const [userImage, setUserImage] = useState();
   const [cityList, setCityList] = useState([]);
   const [genderList] = useState(['Male', 'Female'])
+  const [bloods] = useState(['A+', 'A-','B+', 'B-','O+', 'O-','AB+', 'AB-',])
 
   const takePhotoFromCamera = () => {
     ImagePicker.openCamera({
@@ -480,21 +481,31 @@ const ProfileScreen = ({ navigation }) => {
                 />
               }
             />
-            <InputField
-              label={'Blood Group'}
-              value={blood}
-              color={'#333'}
-              pcolor={'#333'}
-              onChangeText={setBlood}
-              icon={
+            <View style={{
+              flexDirection: 'row', alignItems: 'center', borderBottomColor: '#ccc',
+              borderBottomWidth: 1, marginBottom: 30
+            }} >
                 <Fontisto
                   name="blood-drop"
                   size={20}
                   color="red"
                   style={{ marginRight: 5 }}
                 />
-              }
-            />
+              <Picker
+                style={{ width: '80%',color:'#333' }}
+                selectedValue={blood}
+                onValueChange={(itemVal) => {
+                  setBlood(itemVal);
+                }}
+              >
+                {
+                  bloods.map((l) => (
+                    <Picker.Item label={l} value={l} style={{ color: '#222' }} />
+                  ))
+                }
+
+              </Picker>
+            </View>
 
             <CustomButton label={'SUBMIT'} onPress={sendData} />
 

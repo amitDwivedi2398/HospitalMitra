@@ -26,28 +26,29 @@ import { set } from 'react-native-reanimated';
 import OtpInputs from 'react-native-otp-inputs';
 
 
-const LoginScreen = ({ navigation }) => {
+const VerifyOtpScreen = ({ navigation }) => {
   const [storeddata, setStoreddata] = useState('')
   const [userNumber, setUserNumber] = useState('')
+  const [email, setEmail] = useState('')
   const [data, setData] = useState('')
   const [password, setPassword] = useState('')
   const [otp, setOTP] = useState('');
 
   const sendMobile = () => {
-    console.log(userNumber);
+    console.log(email,password);
     axios
       .post(
-        `http://hospitalmitra.in/newadmin/api/ApiCommonController/user_loginbypassword`,
+        `http://hospitalmitra.in/newadmin/api/ApiCommonController/verify_Forgot_otp`,
         {
-          mobile_no: userNumber,
-          password:password
+          email: email,
+          otp:password,
         },
       )
       .then(response => {
         console.log(response.data);
         if (response.data != null) {
-          _storeData(response.data.data.id);
-          navigation.replace('Home');
+          alert('succssful Otp')
+          navigation.replace('ConfirnPassword');
         } else {
           console.log('no id!');
         }
@@ -56,55 +57,6 @@ const LoginScreen = ({ navigation }) => {
         console.log(error);
       });
   };
-  const _storeData = async id => {
-    try {
-      await AsyncStorage.setItem('user_id', id);
-      console.log('id Saved');
-    } catch (error) {
-      console.log('Some error in setting id');
-    }
-  };
-  const getData = async () => {
-    try {
-      const user_id = await AsyncStorage.getItem('user_id');
-      if (user_id !== null) {
-        console.log('success');
-        console.log('user_id ???????', user_id);
-        setStoreddata(user_id);
-        navigation.replace('Home');
-      }
-    } catch (e) {
-      console.log('no Value in login');
-    }
-  };
-  useEffect(() => {
-    getData();
-  }, [storeddata]);
-  const verifyOtp = () => {
-    console.log(userNumber, otp);
-    axios
-      .post(
-        `http://hospitalmitra.in/newadmin/api/ApiCommonController/verify_otppp`,
-        {
-          mobile_no: userNumber,
-          otp: otp,
-        },
-      )
-      .then(response => {
-        console.log('@@@@@', response.data);
-        console.log('#####', response.data.data[0].id);
-        if (response.data != null) {
-          _storeData(response.data.data[0].id);
-          navigation.replace('Home');
-        } else {
-          console.log('no id!');
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
-
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: 'center' }}>
           <ScrollView>
@@ -122,30 +74,31 @@ const LoginScreen = ({ navigation }) => {
                   color: '#333',
                   marginBottom: 30,
                 }}>
-                Login
+                Verify Otp
               </Text>
 
               <InputField
-                label={'Enter your Phone No. '}
-                value={userNumber}
-                color={'#333'}
-                pcolor={'#333'}
-                onChangeText={setUserNumber}
-                icon={
-                  <Ionicons
-                    name="phone-portrait-outline"
-                    size={20}
-                    color="#666"
-                    style={{ marginRight: 5 }}
-                  />
-                }
-              />
+          label={'Email ID'}
+          value={email}
+          onChangeText={setEmail}
+          color={'#333'}
+              pcolor={'#333'}
+          icon={
+            <MaterialIcons
+            name="alternate-email"
+            size={20}
+            color="#666"
+            style={{marginRight: 5}}
+          />
+          }
+          keyboardType="email-address"
+        />
               <InputField
               value={password}
               color={'#333'}
               pcolor={'#333'}
               onChangeText={setPassword}
-              label={'Password'}
+              label={'Password. '}
               icon={
                 <Ionicons
                   name="lock-closed-outline"
@@ -156,28 +109,14 @@ const LoginScreen = ({ navigation }) => {
               }
             />
 
-              <CustomButton label={"Login"} onPress={sendMobile} />
-
-              <Text style={{ textAlign: 'center', color: '#666', marginBottom: 30 }}>
-                Or, login with ...
-              </Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Register')} >
-                <Text style={{ textAlign: 'center', color: '#333', marginBottom: 30,fontSize:15,fontWeight:'600' }}>
-                  Register
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.navigate('ForgotScreen')}>
-                <Text style={{ textAlign: 'center', color: 'red', marginBottom: 30 }}>
-                  Forgot Password ? 
-                </Text>
-              </TouchableOpacity>
+              <CustomButton label={"Verify Otp"} onPress={sendMobile} />
             </View>
           </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default LoginScreen;
+export default VerifyOtpScreen;
 const styles = StyleSheet.create({
   otp: {
     borderWidth: 1,

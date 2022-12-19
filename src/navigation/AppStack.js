@@ -43,6 +43,10 @@ import ChangeLng from '../screens/DrawerPages/ChangeLng';
 import ModelScreen from '../screens/Model/ModelScreen';
 import ChatFormScreen from '../screens/ChatFormScreen';
 import ChatScreen from '../screens/ChatScreen';
+import ForgotScreen from '../screens/ForgotScreen';
+import CityScreen from '../screens/CityScreen';
+import VerifyOtpScreen from '../screens/VerifyOtpScreen';
+import ConfirnPassword from '../screens/ConfirnPassword';
 
 
 const Drawer = createDrawerNavigator();
@@ -141,6 +145,26 @@ const HomeStack = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="ForgotScreen"
+        component={ForgotScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CityScreen"
+        component={CityScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="VerifyOtpScreen"
+        component={VerifyOtpScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ConfirnPassword"
+        component={ConfirnPassword}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="GameDetails"
         component={GameDetailsScreen}
         options={({ route }) => ({
@@ -230,7 +254,7 @@ const AuthStack = () => {
           ),
         }}
       /> */}
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="About Hospital"
         component={About}
         options={{
@@ -238,16 +262,16 @@ const AuthStack = () => {
             <Ionicons name="md-information-circle-outline" size={22} color={color} />
           ),
         }}
-      />
-      <Drawer.Screen
-        name="Contact"
+      /> */}
+      {/* <Drawer.Screen
+        name="Contact Us"
         component={Contact}
         options={{
           drawerIcon: ({ color }) => (
             <AntDesign name="contacts" size={22} color={color} />
           ),
         }}
-      />
+      /> */}
 
     </Drawer.Navigator>
   );

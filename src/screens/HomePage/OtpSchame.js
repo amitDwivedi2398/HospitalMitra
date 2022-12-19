@@ -10,6 +10,8 @@ import { sliderData } from '../../model/data';
 import { windowWidth } from '../../utils/Dimensions';
 import BannerSlider from '../../components/BannerSlider';
 import axios from 'axios';
+import { SliderBox } from 'react-native-image-slider-box';
+
 
 
 
@@ -19,8 +21,33 @@ const renderBanner = ({ item, index }) => {
 };
 const OtpSchame = ({ navigation,route }) => {
     const {id} = route.params;
+    const {centerName} = route.params;
     console.log("ID ??",id);
+    console.log("centerName ??",centerName);
     const [doctor, setDoctor] = useState([])
+    const [slider, setSlider] = useState([]);
+
+    const image = [
+        { uri: `${slider.image1}` },
+        { uri: `${slider.image2}` },
+        { uri: `${slider.image3}` },
+    ]
+    const sliderBanner = async () => {
+        axios
+            .get(
+                `http://hospitalmitra.in/newadmin/api/ApiCommonController/topbanner`,
+            )
+            .then(response => {
+                console.log("sliderBanner image list <<<<<", response.data.data);
+                setSlider(response.data.data[0])
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+    useEffect(() => {
+        sliderBanner()
+    }, []);
     
     const getDocter = async () => {
         axios
@@ -44,13 +71,15 @@ const OtpSchame = ({ navigation,route }) => {
         <SafeAreaView style={styles.container} >
             <CustomHeader />
             <View>
-                <Carousel
-                    data={sliderData}
-                    renderItem={renderBanner}
-                    sliderWidth={windowWidth - 20}
-                    itemWidth={300}
-                    loop={true}
+            <SliderBox
+                    images={image}
+                    dotColor="#4582FF"
+                    inactiveDotColor='black'
+                    dotStyle={{ height: 20, width: 20, borderRadius: 50 }}
+                    imageLoadingColor="black"
                     autoplay={true}
+                    autoplayInterval={2000}
+                    circleLoop={true}
                 />
             </View>
             <View>
@@ -61,7 +90,7 @@ const OtpSchame = ({ navigation,route }) => {
                             <View style={styles.mainView} >
                                 <View style={styles.mainRow} >
                                     <TouchableOpacity style={styles.btn}
-                                        onPress={() => navigation.navigate('DoctorAbout',{id:item.id})}
+                                        onPress={() => navigation.navigate('DoctorAbout',{id:item.id,centerName:centerName})}
                                     >
                                         <Image
                                             source={{ uri: `${item.image}` }}

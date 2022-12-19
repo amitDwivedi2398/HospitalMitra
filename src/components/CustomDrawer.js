@@ -5,6 +5,7 @@ import {
   ImageBackground,
   Image,
   TouchableOpacity,
+  Linking,
 } from 'react-native';
 import {
   DrawerContentScrollView,
@@ -12,6 +13,7 @@ import {
 } from '@react-navigation/drawer';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DrawerActions } from '@react-navigation/native';
@@ -113,12 +115,57 @@ const CustomDrawer = props => {
           <DrawerItemList {...props} />
         </View>
       </DrawerContentScrollView>
-      <View style={{padding: 20, borderTopWidth: 1, borderTopColor: '#ccc'}}>
-        <TouchableOpacity onPress={() => {}} style={{paddingVertical: 15}}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            
-          </View>
-        </TouchableOpacity>
+      <View style={{padding: 20, borderTopWidth: 1, borderTopColor: '#ccc',}}>
+        <TouchableOpacity
+            onPress={() =>
+              Linking.openURL(
+                'https://hospitalmitra.in/about.php',
+              )
+            }
+            style={{paddingVertical: 15}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <Ionicons name="md-information-circle-outline" size={22} color={'black'} />
+              {/* <OpenURLButton  url={supportedURL}>About Us</OpenURLButton> */}
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontFamily: 'Roboto-Medium',
+                  marginLeft: 5,
+                  color: '#333',
+                }}>
+                About Hospital
+              </Text>
+            </View>
+          </TouchableOpacity>
+        <TouchableOpacity
+            onPress={() =>
+              Linking.openURL(
+                'https://hospitalmitra.in/contact.php',
+              )
+            }
+            style={{}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <AntDesign name="contacts" size={22} color={'black'} />
+              {/* <OpenURLButton  url={supportedURL}>About Us</OpenURLButton> */}
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontFamily: 'Roboto-Medium',
+                  marginLeft: 5,
+                  color: '#333',
+                }}>
+                Contact Us
+              </Text>
+            </View>
+          </TouchableOpacity>
         <TouchableOpacity
           onPress={async () => {
             console.log('>>>>>>>>>>>');

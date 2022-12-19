@@ -6,6 +6,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Rating } from 'react-native-ratings';
 import axios from 'axios';
+import { log } from 'react-native-reanimated';
 
 
 
@@ -14,15 +15,10 @@ import axios from 'axios';
 const DoctorDetails = ({ navigation, route }) => {
     const { id } = route.params;
     const [hospitalDetails, setHospitalDetails] = useState([])
+    const [ratings, setRatings] = useState([])
     console.log("amit id", id);
-    const [images, setimages] = useState([
-        { src: require('../../assets/ResultFindDoctor/img.png'), title: 'Dr. Vishwas Madhav Thakur', key: '1' },
-    ]);
     const [categoryList, setcategoryList] = useState([
         { img: require('../../assets/images/becoming-doctor.jpg'), titleName: 'What To Do For OPD', key: '1' },
-        // { img: require('../../assets/images/speech-on-doctor.jpg'), titleName: 'Available Facilities', key: '2' },
-        // { img: require('../../assets/images/team-of-doctors.jpg'), titleName: 'OPD Schedule', key: '3' },
-        // { img: require('../../assets/images/departmentHospital.png'), titleName: 'Investigation and Intervention', key: '4' },
     ]);
 
     const getHospitalDetails = async () => {
@@ -39,10 +35,24 @@ const DoctorDetails = ({ navigation, route }) => {
                 console.log(error);
             });
     };
+    const getRating = async () => {
+        axios
+            .get(
+                `http://hospitalmitra.in/newadmin/api/ApiCommonController/ratinglistbyhosid/${id}`,
+            )
+            .then(response => {
+                console.log("Rating <<<<<", response.data.data);
+                const res = response.data.data
+                setRatings(res[0].rating)
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
     useEffect(() => {
         getHospitalDetails();
+        getRating();
     }, []);
-
     return (
         <SafeAreaView style={styles.container} >
             <ScrollView>
@@ -87,19 +97,28 @@ const DoctorDetails = ({ navigation, route }) => {
                                                     (
                                                         <View>
                                                         <Rating style={{ alignSelf: 'flex-start' }}
+                                                        type='custom'
+                                                        ratingColor='#FDCC0D'
+                                                        ratingBackgroundColor='#FDCC0D'
                                                         imageSize={15}
                                                         tintColor='#F3F3F3'
-                                                        ratingCount={3}
+                                                        ratingCount={ratings}
+                                                        
                                                     />
 
-                                                    <TouchableOpacity onPress={() => navigation.navigate('Model', { id: item.id, name: item.name })} >
+                                                    <TouchableOpacity onPress={() => navigation.navigate('Model', { id: item.id,name: item.name })} >
                                                         <Text style={{ color: '#4582FF', fontWeight: '900' }} >Rate Hospital</Text>
 
                                                     </TouchableOpacity>
                                                         </View>
                                                         )
                                                     :
-                                                    (<View></View>)
+                                                    (<View>
+                                                        <TouchableOpacity onPress={() => navigation.navigate('Model', { id: item.id, name: item.name,type:item.type })} >
+                                                        <Text style={{ color: '#4582FF', fontWeight: '900' }} >Rate Hospital</Text>
+
+                                                    </TouchableOpacity>
+                                                    </View>)
                                                     }
                                                     
                                                 </View>
@@ -237,7 +256,15 @@ const styles = StyleSheet.create({
     },
     txt: {
         alignSelf: 'center', textAlign: 'center', color: '#fff', fontFamily: 'Inter-Bold',
-    }
+    },
+    startImgStyle: {
+        width: 15,
+        height: 15,
+        resizeMode: 'cover'
+    },
+    CustomRatingBarStyle: {
+        flexDirection: 'row',
+    },
 })
 
 export default DoctorDetails;
